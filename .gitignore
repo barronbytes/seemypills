@@ -1,10 +1,12 @@
 # --- Global ---
-**/.venv/
-**/.env
-**/__pycache__/
+.venv/
+.env
+.env.*
 
 # --- Frontend / TS ---
-**/node_modules/
+node_modules/
 
 # --- Backend / Python ---
+__pycache__/
+*.pyc
 .pytest_cache/

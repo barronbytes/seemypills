@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=f".env.{env_type}",
         env_file_encoding="utf-8",
-        extra="ignore", # Prevents crashing if extra values in .env.* files
+        extra="allow", # REVIEW
         validate_assignment=True
     )
 
@@ -44,7 +44,7 @@ class Settings(BaseSettings):
         super().__init__(*args, **kwargs)
 
         # Creates dictionary of all environmental variables in backend-python/
-        raw_data = self.model_dump()
+        raw_data = self.__dict__ # REVIEW
 
         # Sets sub-model values
         self.app_info = AppSettings(**raw_data)

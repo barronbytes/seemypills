@@ -1,8 +1,10 @@
 import os
+
 from pydantic import BaseModel, SecretStr, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 env_type = os.getenv("ENV", "development")
+
 
 class AppSettings(BaseModel):
     # General app information
@@ -11,6 +13,7 @@ class AppSettings(BaseModel):
     app_version: str
     debug: bool = True
     log_level: str
+
 
 class DatabaseSettings(BaseModel):
     # Database connection information
@@ -27,7 +30,9 @@ class DatabaseSettings(BaseModel):
             f"@{self.db_host}:{self.db_port}/{self.db_name}"
         )
 
+
 class Settings(BaseSettings):
+    # Overall settings for app & database
     app_info: AppSettings = None # type: ignore
     db_info: DatabaseSettings = None # type: ignore
 
@@ -50,4 +55,5 @@ class Settings(BaseSettings):
         self.app_info = AppSettings(**raw_data)
         self.db_info = DatabaseSettings(**raw_data)
 
-settings = Settings()
+def get_settings() -> Settings:
+    return Settings()

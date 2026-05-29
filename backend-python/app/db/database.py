@@ -1,8 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.core.config import settings
 
-db_url = settings.db_info.db_url
+from app.core.config import get_settings
+
+
+db_url = get_settings().db_info.db_url
 
 engine = create_engine(
     url=db_url,
@@ -12,7 +14,11 @@ engine = create_engine(
     pool_pre_ping=True # reactive hygiene: retires dead connection, makes new connection
 )
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(
+    autocommit=False, 
+    autoflush=False, 
+    bind=engine
+)
 
 def get_db():
     db = SessionLocal()

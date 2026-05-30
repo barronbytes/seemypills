@@ -32,28 +32,18 @@ class DatabaseSettings(BaseModel):
 
 
 class Settings(BaseSettings):
-    # Overall settings for app & database
-    app_info: AppSettings = None # type: ignore
-    db_info: DatabaseSettings = None # type: ignore
+    # Pydantic generates fields directly from environmental variables
+    app_info: AppSettings
+    db_info: DatabaseSettings
 
     model_config = SettingsConfigDict(
         env_file=f".env.{env_type}",
         env_file_encoding="utf-8",
+        env_nested_delimiter="__",
         extra="allow", # REVIEW
         validate_assignment=True
     )
 
-    def __init__(self, *args, **kwargs):
-        # Opens .env.* file via model_config when Settings() called & reads os system variables
-        # Keep *args & **kwargs even though not supplied in Settings() call
-        super().__init__(*args, **kwargs)
-
-        # Creates dictionary of all environmental variables in backend-python/
-        raw_data = self.__dict__ # REVIEW
-
-        # Sets sub-model values
-        self.app_info = AppSettings(**raw_data)
-        self.db_info = DatabaseSettings(**raw_data)
 
 def get_settings() -> Settings:
     return Settings()

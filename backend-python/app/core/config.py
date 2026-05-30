@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from pydantic import BaseModel, SecretStr, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -31,16 +32,25 @@ class DatabaseSettings(BaseModel):
         )
 
 
+class AWSSettings(BaseModel):
+    # AWS credentials + region information for production environment
+    # Set defaults to initialize empty instance for development environment
+    access_key_id: Optional[str] = None
+    secret_access_key: Optional[SecretStr] = None  
+    default_region: str = "us-east-1"
+
+
 class Settings(BaseSettings):
     # Pydantic generates fields directly from environmental variables
     app_info: AppSettings
     db_info: DatabaseSettings
+    aws_info: AWSSettings = AWSSettings()
 
     model_config = SettingsConfigDict(
         env_file=f".env.{env_type}",
         env_file_encoding="utf-8",
         env_nested_delimiter="__",
-        extra="allow", # REVIEW
+        extra="forbid",
         validate_assignment=True
     )
 

@@ -9,7 +9,7 @@ env_type = os.getenv("ENV", "development")
 
 
 class AppSettings(BaseModel):
-    # General app information
+    """ General app information"""
     env: str
     app_name: str
     app_version: str
@@ -18,7 +18,7 @@ class AppSettings(BaseModel):
 
 
 class DatabaseSettings(BaseModel):
-    # Database connection information
+    """Database connection information"""
     db_user: str
     db_password: SecretStr
     db_host: str
@@ -34,15 +34,17 @@ class DatabaseSettings(BaseModel):
 
 
 class AWSSettings(BaseModel):
-    # AWS credentials + region information for production environment
-    # Set defaults to initialize empty instance for development environment
+    """ 
+    AWS credentials + region information for production environment
+    Set defaults to initialize empty instance for development environment
+    """
     access_key_id: Optional[str] = None
     secret_access_key: Optional[SecretStr] = None  
     default_region: str = "us-east-1"
 
 
 class Settings(BaseSettings):
-    # Pydantic generates fields directly from environmental variables
+    """Pydantic generates fields directly from environmental variables"""
     app_info: AppSettings
     db_info: DatabaseSettings
     aws_info: AWSSettings = AWSSettings()
@@ -57,4 +59,5 @@ class Settings(BaseSettings):
 
 
 def get_settings() -> Settings:
+    """Returns Settings class instance"""
     return Settings()

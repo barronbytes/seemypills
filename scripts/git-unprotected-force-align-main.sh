@@ -3,7 +3,7 @@
 set -e
 
 echo "🛑 WARNING: This script manually fast-forwards 'main' to match 'develop' and pushes directly to GitHub."
-echo "⚠️  Ensure you have temporarily disabled GitHub branch protection rules for 'main' before continuing!"
+echo "⚠️ Ensure you have temporarily disabled GitHub branch protection rules for 'main' before continuing!"
 echo "--------------------------------------------------------"
 
 # 1. Switch over to main branch

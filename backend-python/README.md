@@ -15,13 +15,15 @@ seemypills/backend-python/
 ├── app/
 │   ├── core/               # Global setup (config, logging, security)
 │   ├── db/                 # Database layer (base, session, mixins)
-│   ├── features/           # Domain modules (vertical slices)
-│   │   └── auth/           # Auth feature (models, router, schemas, services)
+│   ├── features/           # Domain modules (models, schemas, servics, routers)
 │   ├── utils/              # Shared utilities
 │   └── main.py             # FastAPI application entry point
 ├── tests/
+├── .env.development        # Local environmental variables
+├── .env.production         # AWS enviornmental variables
 ├── main.py                 # Application runner
 ├── pyproject.toml          # Dependencies (managed via uv)
+├── uv.lock
 └── README.md
 
 ## Prerequisite Installations

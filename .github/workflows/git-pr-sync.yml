@@ -28,7 +28,7 @@ jobs:
   # --- HANDLES MAIN & DEVELOP ALIGNMENT AFTER RELEASE ---
   align-release-branches:
     # Runs ONLY if a release PR was successfully merged into main from develop
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'develop'
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository

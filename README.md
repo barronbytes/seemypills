@@ -36,13 +36,20 @@ To protect the production codebase on `main` branch, all features are developed 
 
 #### 🔒 Branch Protection Rules
 
-Select the following GitHub protection rules for the `main` and `develop` branches:
+Select the following GitHub protection rules for the `main` branch:
 
-[x] Require a pull request before merging
-[x] Dismiss stale pull request approvals when new commits are pushed
-[x] Require a linear history
-[x] Do not allow bypassing the above settings
-[x] Allow force pushes (everyone)
+- Require a pull request before merging
+- Dismiss stale pull request approvals when new commits are pushed
+- Require a linear history
+- Do not allow bypassing the above settings
+- Allow force pushes (everyone)
+
+Select the following GitHub protection rules for the `develop` branch:
+
+- Require a pull request before merging
+- Require a linear history
+- Do not allow bypassing the above settings
+- Allow force pushes (everyone)
 
 #### 🔄 Standard Release Workflow
 

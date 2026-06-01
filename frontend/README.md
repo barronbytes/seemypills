@@ -1,6 +1,6 @@
 # SeeMyPills ➔ Frontend (TypeScript)
 
-This frontend is a vanilla TypeScript application built using a feature-based project structure, deployed on AWS and integrated with a Python backend. Users submit or take a photo for the backend to analyze, presenting patients with medication information readings.
+This frontend is a vanilla TypeScript application deployed on AWS, built using a feature-based project structure and integrated with a Python backend. Users submit or take a photo for the backend to analyze, presenting patients with medication information readings.
 
 ## Tech Stack
 

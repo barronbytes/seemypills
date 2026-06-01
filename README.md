@@ -59,6 +59,6 @@ When branch protections are active, follow these steps to move a feature to prod
 If the `main` branch ever says it is both "ahead and behind" of the `develop` branch, then do either of these:
 
 1. **Option A:** Keep `develop` branch intact. Temporarily turn off protection rules for `main` and use the `./scripts/git-unprotected-force-align-main.sh` file to fast-forward sync `main` branch directly.
-2. **Option B:** Keep `main` branch intact. Use the `./scripts/git-diverged-force-align-develop.sh` file to hard-reset and force-push the `develop` branch back into perfect alignment with `main`.
+2. **Option B:** Keep `main` branch intact. Temporarily turn off protection rules for `develop` and use the `./scripts/git-diverged-force-align-develop.sh` file to hard-reset and force-push the `develop` branch.
 
 ## System Design

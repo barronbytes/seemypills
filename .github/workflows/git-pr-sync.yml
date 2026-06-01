@@ -6,43 +6,25 @@ on:
     types: [closed]
 
 jobs:
-  # --- HANDLES DEVELOP BRANCH SYNC ---
-  sync-remote-develop:
-    # Runs ONLY if a pull request was successfully merged into the develop branch
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Fetches full history so git can calculate branch structures
-
-      - name: Configure Git Bot Identity
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Run Develop Sync Script
-        run: bash scripts/git-sync-develop.sh
-
-  # --- HANDLES MAIN & DEVELOP ALIGNMENT AFTER RELEASE ---
-  align-release-branches:
-    # Runs ONLY if a release PR was successfully merged into main from develop
+  # --- FORCE ALIGN REMOTE DEVELOP AFTER PRODUCTION REBASE ---
+  force-align-remote-develop:
+    # Runs ONLY if a PR was successfully merged into the main branch
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Fetches full history to allow branch resetting
 
       - name: Configure Git Bot Identity
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Run Main Sync Script
-        run: bash scripts/git-sync-main.sh
-
-      - name: Run Develop Fast-Forward Script
-        run: bash scripts/git-sync-develop-to-main.sh
+      - name: Force Align Remote Develop to Main
+        run: |
+          # Switch to develop, overwrite its history to match main exactly, and force-push back to GitHub
+          git switch develop
+          git reset --hard origin/main
+          git push origin develop --force

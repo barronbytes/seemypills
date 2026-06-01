@@ -1,0 +1,73 @@
+/*
+SPACING SYSTEM (px)
+2 / 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 80 / 96 / 128
+
+FONT SIZE SYSTEM (px)
+10 / 12 / 14 / 16 / 18 / 20 / 24 / 30 / 36 / 44 / 52 / 62 / 74 / 86 / 98
+*/
+
+*::before, *::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border: 0;
+    background: none;
+}   
+
+html {
+    font-size: 62.5%; /* set 1rem to equal 10px for easier scaling */
+}
+
+body {
+    position: relative;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color: black;
+    background-color: #fff;
+
+    -webkit-font-smoothing: antialiased; /* improve text rendering on Webkit browsers */
+    -moz-osx-font-smoothing: grayscale; /* improve text rendering on Webkit browsers */
+    overflow-x: hidden;
+}
+    
+ul, ol, li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button, input, textarea, select {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+}
+
+img, video {
+    max-width: 100%; /* ensure media scales responsively */
+    height: auto;
+    display: block; /* **prevent inline display gaps for media** */
+}
+
+:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
+}
+
+/* remove animation for people who've turned them off */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

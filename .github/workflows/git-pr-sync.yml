@@ -23,7 +23,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Run Develop Sync Script
-        run: bash scripts/sync-develop.sh
+        run: bash scripts/git-sync-develop.sh
 
   # --- HANDLES MAIN & DEVELOP ALIGNMENT AFTER RELEASE ---
   align-release-branches:
@@ -42,7 +42,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Run Main Sync Script
-        run: bash scripts/sync-main.sh
+        run: bash scripts/git-sync-main.sh
 
       - name: Run Develop Fast-Forward Script
-        run: bash scripts/sync-develop-to-main.sh
+        run: bash scripts/git-sync-develop-to-main.sh

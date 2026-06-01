@@ -1,0 +1,247 @@
+/*
+SPACING SYSTEM (px)
+2 / 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 80 / 96 / 128
+
+FONT SIZE SYSTEM (px)
+10 / 12 / 14 / 16 / 18 / 20 / 24 / 30 / 36 / 44 / 52 / 62 / 74 / 86 / 98
+*/
+
+/* ==================== GLOBAL VARIABLES ==================== */
+
+:root {
+    --breakpoint-3: 24rem;
+    --breakpoint-4: 32rem; /* 4 columns, mobile-portrait */
+    --breakpoint-5: 40rem;
+    --breakpoint-6: 48rem; /* 6 columns, mobile-landscape */
+    --breakpoint-9: 72rem; /* 9 columns, tablet-portrait */
+    --breakpoint-12: 96rem; /* 12 columns, tablet-landscape */
+    --breakpoint-14: 112rem; /* 14 columns, laptop-small */
+
+    --ff-serif: "Merriweather", serif;
+    --ff-sans-serif: Arial, sans-serif;
+    
+    /* Gap values */
+    --gutter-col-padding: 1rem;
+    --gutter-col-1: 2rem;
+    --gutter-col-2: 4rem;
+    --gutter-col-3: 6rem;
+    --gutter-col-4: 8rem;
+    --gutter-row-padding: 0.8rem;
+    --gutter-row-1: 1.6rem;
+    --gutter-row-2: 3.2rem;
+    --gutter-row-3: 4.8rem;
+    --gutter-row-4: 6.4rem;
+    --gutter-row-5: 8.0rem;
+    --gutter-row-8: 12.8rem;
+    --gutter-row-10: 16rem;
+    --backup-row-0: -0.8rem;
+    --backup-row-1: -1.6rem;
+    --backup-row-2: -3.2rem;
+    --backup-row-3: -4.8rem;
+    --backup-row-4: -6.4rem;
+    --backup-row-5: -8.0rem;
+
+    /* Gray Shades */
+    --gray-100: #EDEDED;
+    --gray-200: #DBDBDB;
+    --gray-300: #C9C9C9;
+    --gray-400: #B8B8B8;
+    --gray-500: #A6A6A6;
+    --gray-600: #858585;
+    --gray-700: #636363;
+    --gray-800: #424242;
+    --gray-900: #212121;
+
+    /* Red Shades */
+    --red-100: #F2C5C9;
+    --red-200: #E68E97;
+    --red-300: #D95461;
+    --red-400: #BC2A38;
+    --red-500: #831D27;
+    --red-600: #68171F;
+    --red-700: #4F1218;
+    --red-800: #360C10;
+    --red-900: #190608;
+
+    /* Green Shades */
+    --green-100: #C6F5D8;
+    --green-200: #8EECB0;
+    --green-300: #5AE38C;
+    --green-400: #25D565;
+    --green-500: #1B9D4B;
+    --green-600: #167E3C;
+    --green-700: #10602E;
+    --green-800: #0A3D1D;
+    --green-900: #051E0E;
+
+   /* Blue Shades */
+   --blue-100: #B2C2F5;
+   --blue-200: #6584EB;
+   --blue-300: #1C49DE;
+   --blue-400: #133195;
+   --blue-500: #091757;
+   --blue-600: #07133B;
+   --blue-700: #050D29;
+   --blue-800: #03091B;
+   --blue-900: #02040E;
+   
+   /* Orange Shades */
+   --orange-100: #FAECD6;
+   --orange-200: #F5DAAD;
+   --orange-300: #F1C989;
+   --orange-400: #ECB660;
+   --orange-500: #E7A337;
+   --orange-600: #CD8819;
+   --orange-700: #9B6713;
+   --orange-800: #64420C;
+   --orange-900: #332106;
+
+   /* Logo colors */
+   --logo-background: #fefff2;
+   --logo-blue: #0E1B59;
+   --logo-yellow: #ECA400;
+}
+
+/* ==================== HTML DEFAULTS ==================== */
+
+html {
+    margin: 0 var(--gutter-col-padding);
+    scroll-behavior: smooth;
+    font-size: 62.5%;
+}
+
+body {
+    max-width: var(--breakpoint-14);
+    margin: 0 auto;
+    font-family: var(--ff-sans-serif);
+    font-size: 1.6rem;
+    overflow-x: hidden; 
+}
+
+h1, h2, h3, h4, h5, h6 { font-family: var(--ff-serif); line-height: 1; }
+h1 { font-size: 5.2rem; }
+h2 { font-size: 4.4rem; }
+h3 { font-size: 3.6rem; }
+h4 { font-size: 3rem; }
+h5 { font-size: 2.4rem; }
+h6 { font-size: 2rem; }
+
+a { 
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.hidden { display: none; }
+
+/* ==================== LAYOUTS ==================== */
+
+.grid {
+    width: 100%;
+    display: grid;
+}
+
+.grid-center { 
+    width: 100%;
+    display: grid;
+    align-items: center; /* Vertical alignment */
+    justify-items: center; /* Horizontal alignment */
+}
+
+.flex {
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Vertical alignment */
+}
+
+.flex-center {
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Vertical alignment */
+    justify-content: center; /* Horizontal alignment */
+}
+
+.flex-y {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-mobile-portrait { max-width: var(--breakpoint-4); }
+.layout-mobile-landscape { max-width: var(--breakpoint-6); }
+.layout-tablet-portrait { max-width: var(--breakpoint-9); }
+.layout-tablet-landscape { max-width: var(--breakpoint-12); }
+.layout-tablet-laptop { max-width: var(--breakpoint-14); }
+
+.margin-section-top { margin-top: var(--gutter-row-4); }
+.margin-section-bottom { margin-bottom: var(--gutter-row-4); }
+.padding-section-top { padding-top: var(--gutter-row-4); }
+.padding-section-bottom { padding-bottom: var(--gutter-row-4); }
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip: rect(0, 0, 0, 0);
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* ==================== SKIP NAV LINKS ==================== */
+
+.skip-nav-link {
+    position: absolute;
+    top: var(--gutter-row-2);
+    border-radius: 0 0 0.5rem 0.5rem;
+    padding: var(--gutter-row-padding) var(--gutter-col-padding);
+    background-color: var(--gray-900);
+    color: var(--gray-100);
+    transform: translateY(-200%);
+    transition: transform 300ms ease-in;
+}
+
+.skip-nav-link:focus {
+    transform: translateY(0);
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+
+.button-main {
+    display: inline-block;
+    padding: var(--gutter-row-padding) var(--gutter-col-padding);
+    border: 0.1rem solid var(--logo-yellow);
+    border-radius: 0.5rem;
+    background-color: var(--logo-yellow);
+    color: var(--gray-900);
+    font-family: var(--ff-serif);
+    transition: background-color 200ms ease-in-out;
+}
+
+.button-main:hover {
+    border-color: var(--gray-900);
+    background-color: var(--logo-blue);
+    color: var(--gray-100);
+}
+
+.button-menu {
+    display: inline-block;
+    padding: var(--gutter-row-padding) var(--gutter-col-padding);
+    border: 0.1rem solid var(--gray-300);
+    border-radius: 0.5rem;
+    background-color: var(--gray-100);
+    color: var(--gray-900);
+    font-family: var(--ff-serif);
+    transition: background-color 200ms ease-in-out;
+}
+
+.button-menu:hover {
+    border-color: var(--gray-900);
+    background-color: var(--logo-blue);
+    color: var(--gray-100);
+}
+
+/* ==================== TEXT ==================== */
+
+.underline-yellow {
+    color: var(--gray-900);
+    background: linear-gradient(to top, var(--logo-yellow) 10%, transparent 40%);
+}

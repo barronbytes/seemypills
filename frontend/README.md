@@ -15,14 +15,14 @@ seemypills/frontend/
 ├── public/                 # Uncompiled, static assets (favicon, icons, etc.)
 ├── src/
 │   ├── assets/             # All UI fonts/photos/media
-│   ├── core/               # Global setup (API client, routing, global stores)
+│   ├── core/               # App infrastructure (API client, routing, global stores)
 │   │   ├── lib/
 │   │   ├── store/
 │   │   ├── shared/
 │   │   ├── api-client.ts
 │   │   └── router.ts
 │   ├── features/           # Domain pages/modules
-│   ├── shared/             # Reusable components, hooks, lib, styles, types, utils
+│   ├── shared/             # Reusable UI components, scripts, styles, typs, util, etc.
 │   └── app.ts              # Main application entry point
 ├── tests/
 ├── .env

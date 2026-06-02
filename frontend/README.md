@@ -22,6 +22,7 @@ seemypills/frontend/
 │   │   ├── api-client.ts
 │   │   └── router.ts
 │   ├── features/           # Domain pages/modules
+│   ├── pages/              # Individual app pages
 │   ├── shared/             # Reusable UI components, scripts, styles, typs, util, etc.
 │   └── app.ts              # Main application entry point
 ├── tests/

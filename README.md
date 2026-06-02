@@ -47,8 +47,8 @@ Select the following GitHub protection rules for the `main` branch:
 Select the following GitHub protection rules for the `develop` branch:
 
 - Require a pull request before merging
+- Dismiss stale pull request approvals when new commits are pushed
 - Require a linear history
-- Do not allow bypassing the above settings
 - Allow force pushes (everyone)
 
 #### 🔄 Standard Release Workflow

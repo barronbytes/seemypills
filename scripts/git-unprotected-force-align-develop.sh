@@ -8,7 +8,7 @@ echo "--------------------------------------------------------"
 
 # 1. Sync local branches to pull the latest remote history
 echo "📥 Step 1: Running remote to local sync pull..."
-./scripts/git-pr-synced-pull.sh
+./scripts/git-action-sync-local.sh
 
 # 2. Move to local develop branch
 echo "🔄 Step 2: Switching to develop branch..."

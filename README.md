@@ -56,16 +56,16 @@ Select the following GitHub protection rules for the `develop` branch:
 When branch protections are active, follow these steps to move a feature to production:
 
 1. **GitHub UI:** Open PR from `feature` to `develop` branch; select **squash and merge**
-2. **Local Terminal:** Manually run: `./scripts/git-pr-synced-pull.sh`
+2. **Local Terminal:** Manually run: `./scripts/git-pr-sync-develop.sh`
 3. **GitHub UI:** Open PR from `develop` to `main` branch; select **rebase and merge**
 4. **GitHub Action:** Automated run: `./.github/workflows/git-pr-sync.yml`
-5. **Local Terminal:** Upate local branches: `./scripts/git-pr-synced-pull.sh`
+5. **Local Terminal:** Upate local branches: `./scripts/git-action-sync-local.sh`
 
 #### 🛠️ Emergency & Manual Fallback Scripts
 
 If the `main` branch ever says it is both "ahead and behind" of the `develop` branch, then do either of these:
 
 1. **Option A:** Keep `develop` branch intact. Temporarily turn off protection rules for `main` and use the `./scripts/git-unprotected-force-align-main.sh` file to fast-forward sync `main` branch directly.
-2. **Option B:** Keep `main` branch intact. Temporarily turn off protection rules for `develop` and use the `./scripts/git-diverged-force-align-develop.sh` file to hard-reset and force-push the `develop` branch.
+2. **Option B:** Keep `main` branch intact. Temporarily turn off protection rules for `develop` and use the `./scripts/git-unprotected-force-align-develop.sh` file to hard-reset and force-push the `develop` branch.
 
 ## System Design

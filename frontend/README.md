@@ -12,9 +12,9 @@ This frontend is a vanilla TypeScript application deployed on AWS, built using a
 
 ```bash
 seemypills/frontend/
-├── public/                 # Uncompiled, static assets (favicon, icons, etc.)
+├── public/                 # Static runtime assets not processed by Vite for dynamically injected HTML
 ├── src/
-│   ├── assets/             # All UI fonts/photos/media
+│   ├── assets/             # Static build time assets processed by Vite for index.html or imported by TypeScript
 │   ├── core/               # App infrastructure (API client, routing, global stores)
 │   │   ├── lib/
 │   │   ├── store/

@@ -38,14 +38,16 @@ Make a UI component according to the [filepath], [filename], and [summary] provi
 
 - Use only CSS Grid and Flexbox for layout structure
   - Already setup some class names in CSS Grid (`.grid`, `.grid-center`, etc.) and Flexbox (`.flex`, `.flex-center`, etc.) for use
-- Never use floats, `position` hacks, or inline `display` overrides to achieve layout
-- Vertically stacked elements must be separated by multiples of 16px — use `--gutter-row-1` (16px) as the base unit
-- Horizontally adjacent elements must be separated by multiples of 10px — use `--gutter-col-padding` (10px) as the base unit
-- Default inner padding for components is `var(--gutter-row-padding) var(--gutter-col-padding)` (8px top/bottom, 10px left/right)
-- Borders follow the `.button-main` pattern from `layout.css`:
-  - Default: `0.1rem solid <color>` with matching `background-color`
-  - Hover: border color shifts to `--gray-900`, background inverts to `--logo-blue`, text to `--gray-100`
-  - Use `border-radius: 0.5rem` and `transition: background-color 200ms ease-in-out`
+  - Never use floats, `position` hacks, or inline `display` overrides to achieve layout
+- Margins: Vertically stacked elements must be separated by multiples of 16px
+  — Use `--gutter-row-1` (16px) as the base unit, other increments exist, don't create new ones without asking
+- Margins: Horizontally adjacent elements must be separated by multiples of 10px 
+  — Use `--gutter-col-padding` (10px) as the base unit, other increments exist, don't create new ones without asking
+- Padding: Default inner padding for components is `var(--gutter-row-padding) var(--gutter-col-padding)` (8px top/bottom, 10px left/right)
+- Borders: Follow all the `.button-menu` patterns from `layout.css`:
+  - Default colors: `border: 0.1rem solid <color>-300`, `background-color: <color>-100`, and `color: var(--<color>-900)`
+  - Hover colors: should invert the background and font values from default
+  - Transitions: `border-radius: 0.5rem` and `transition: background-color 200ms ease-in-out`
   - Colors may vary by component context but the structural pattern must be followed
 
 ### IDs and Class Names (General)
@@ -73,11 +75,13 @@ Make a UI component according to the [filepath], [filename], and [summary] provi
 
 ### Colors
 
-- Always pull values from the CSS custom properties defined in `layout.css` — do not hardcode color or font values
 - Always verify contrast ratios meet WCAG AAA (7:1) for all text/background pairs
-- Use color scale variables (`--gray-100` through `--gray-900`, `--red-*`, `--green-*`, `--blue-*`, `--orange-*`, `--logo-background`, `--logo-blue`, `--logo-yellow`) — never raw hex values
+- Always pull values from the CSS custom properties defined in `layout.css` — do not hardcode color or font values
+- These are the dominant logo colors from `layout.css`:
+  - `--logo-blue: #0E1B59;`
+  - `--logo-yellow: #F3B73E;`s
 - Apply the 60-30-10 rule: 60% neutral canvas backgrounds, 30% structural text and secondary containers, 10% accent (`--logo-yellow`, `--logo-blue`) reserved for primary actions and critical feedback
-
+- Use color scale variables (`--gray-100` through `--gray-900`, `--red-*`, `--green-*`, `--blue-*`, `--orange-*`, `--logo-background`, `--logo-blue`, `--logo-yellow`) — never raw hex values
 
 ## Variants
 

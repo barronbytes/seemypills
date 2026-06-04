@@ -52,4 +52,8 @@ seemypills/frontend/
 
 ## Usage
 
+**Run the Program**
+
+> `pnpm run dev`
+
 ## System Design

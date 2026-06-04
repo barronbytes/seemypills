@@ -1,12 +1,12 @@
-# SeeMyPills
+# See My Pills: Medicate Safely
 
 SeeMyPills is an accessible, full-stack healthcare web application designed to help visually impaired individuals medicate with confidence. Patients photograph or upload prescription labels to receive audio-visual dosage information.
 
 ## Tech Stack
 
-**Frontend:** Vanilla TypeScript (HTML/CSS/TS)
-**Backend:** FastAPI (Python)
-**Infrastructure:** AWS
+- **Frontend:** Vanilla TypeScript (HTML/CSS/TS)
+- **Backend:** FastAPI (Python)
+- **Infrastructure:** AWS
 
 ## Project Structure
 

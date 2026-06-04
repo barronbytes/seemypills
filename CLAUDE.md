@@ -53,13 +53,27 @@ Monorepo combining a vanilla TypeScript frontend and a Python FastAPI backend.
 
 ## Development Rules
 
-### General
+### General Guidelines
 
 - The `.env` and `.env.* files store environmental variables Never hardcode secrets, credentials, or API keys.
 - Read `frontend/README.md` and `backend-python/README.md` before creating or modifying files.
 - The README files are the source of truth for project structure and design patterns.
 
-### Frontend Rules
+### Content Guidelines
+
+- Always:
+  - No jargon (acronyms, technical terms) unless the audience clearly expects it
+  - Avoid passive voice where possible
+  - Avoid en and em dashes
+- Headlines: clear before clever value propositions or labels; 8 words or less
+- Subheadlines: small, supportive comment about headline; 8-15 words
+- Written content: 
+  - Concise and confident; cut anything that doesn't earn its space
+  - No hype, no empty adjectives ("powerful," "seamless," "robust")
+- Error messages: what happened + what to do next (always both)
+- Empty states: explain why it's empty and what action fixes it
+
+### Frontend Guidelines
 
 - **Layout Engines:** Use exclusively Flexbox and CSS Grid for layout structure; do not use legacy floats, positioning hacks, or external CSS grid frameworks.
 - **Semantic Tags:** Lean heavily on native HTML5 primitives; do not reinvent what the browser natively handles. DO NOT rely on `<div>` tag when other semantic tags can group related context better for accessiblility.
@@ -71,7 +85,7 @@ Monorepo combining a vanilla TypeScript frontend and a Python FastAPI backend.
 - **Accessibility (WCAG AAA Baseline):** Deliver maximum screen-reader readability and high-contrast compliance as non-negotiable defaults.
 - **Zero Layout Shifts (CLS):** Use structural skeletons or explicit dimensional placeholders for all asynchronous, dynamic content.
 
-### Backend
+### Backend Guidelines
 
 ...
 
@@ -89,5 +103,20 @@ Monorepo combining a vanilla TypeScript frontend and a Python FastAPI backend.
   - Components stay under 200 lines; extract when they grow beyond this
 - Backend
 - CI/CD
+
+## Testing and Quality
+
+Before considering any task complete:
+
+- Run `pnpm typecheck` — zero errors
+- Run `pnpm lint` — zero warnings
+- Run relevant tests for modified logic
+
+Testing rules:
+
+- Unit tests for all reusable logic and hooks
+- No heavy test scaffolding for simple presentational components
+- Responsive behaviour must be verified for UI changes
+- Empty state, loading state, and error state must all be handled
 
 ## Workflows

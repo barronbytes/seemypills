@@ -6,7 +6,7 @@ This frontend is a vanilla TypeScript application deployed on AWS, built using a
 
 **Frontend:** Vanilla TypeScript (HTML/CSS/TS)
 **Runtime:** Web Browser (Client-side)
-**Tooling:** pnpm, Vite, Vitest
+**Tooling:** pnpm, Vite, Vitest, ESLint
 
 ## Project Structure
 
@@ -42,6 +42,7 @@ seemypills/frontend/
 - TypeScript version 5.9+: static typing and compilation, provided by pnpm
 - @types/node: Node.js type definitions for TypeScript
 - Vitest: testing framework
+- ESLint (`eslint`, `@eslint/js`, `typescript-eslint`): linting with TypeScript-aware rules
 
 ## Dependencies
 - Vite: built-in environmental variable Loading
@@ -58,6 +59,8 @@ seemypills/frontend/
 pnpm dev          # start Vite dev server at http://localhost:5173
 pnpm build        # type-check then bundle for production (tsc && vite build)
 pnpm preview      # preview the production build locally
+pnpm typecheck    # run TypeScript type checking without emitting files
+pnpm lint         # run ESLint across all source files
 ```
 
 ## System Design

@@ -18,6 +18,7 @@ seemypills/
 ├── frontend/           # Vanilla TypeScript client (feature-based)
 ├── backend-python/     # Python FastAPI service (vertical slices)
 ├── scripts/            # Shared automation scripts
+├── CLAUDE.md
 └── README.md
 ```
 

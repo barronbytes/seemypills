@@ -3,6 +3,10 @@
 .env
 .env.*
 
+# --- Claude Code (local/personal only) ---
+.claude/settings.local.json
+.claude/memory/
+
 # --- Frontend / TS ---
 node_modules/
 

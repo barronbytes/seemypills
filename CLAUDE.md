@@ -40,6 +40,7 @@ Monorepo combining a vanilla TypeScript frontend and a Python FastAPI backend.
 ### Project Structure
 
 - Frontend
+  - `assets/` —  static build time assets processed by Vite
   - `core/` — infrastructure (API client, routing, stores)
   - `features/` — domain modules
   - `pages/` — application screens
@@ -53,11 +54,43 @@ Monorepo combining a vanilla TypeScript frontend and a Python FastAPI backend.
 
 ## Development Rules
 
-### General Guidelines
+Read `frontend/README.md` and `backend-python/README.md` before creating or modifying files. The README files are the source of truth for project structure and design patterns.
+
+### Safety Rules
 
 - The `.env` and `.env.* files store environmental variables Never hardcode secrets, credentials, or API keys.
-- Read `frontend/README.md` and `backend-python/README.md` before creating or modifying files.
-- The README files are the source of truth for project structure and design patterns.
+- Do not rename public API routes without explicit instruction
+- Do not modify authentication flows unless the task specifically requires it
+- Do not change database schema without surfacing it clearly first
+- Preserve backward compatibility for all shared components
+- Flag major architectural changes before implementing — don't just do it
+
+### File Placement Guidelines
+
+**Frontend (`src/`)**
+
+- New domain page or feature module → `src/features/<feature-name>/`
+- New reusable UI component → `src/shared/components/`
+- New reusable hook → `src/shared/hooks/`
+- New shared utility function → `src/shared/utils/`
+- New shared type or interface → `src/shared/types/`
+- New shared style → `src/shared/styles/`
+- App infrastructure (routing, API client, global store) → `src/core/`
+- Static asset referenced in `index.html` or imported in TypeScript → `src/assets/`
+- Static asset injected dynamically at runtime → `public/`
+- Feature-specific logic that will not be reused → co-locate inside `src/features/<feature-name>/`
+
+**Backend (`app/`)**
+
+- New domain feature (model, schema, service, router) → `app/features/<feature-name>/`
+- Shared utility function → `app/utils/`
+- Global config, logging, or security → `app/core/`
+- Database engine, session, base model, or mixins → `app/db/`
+
+**General**
+
+- Do not create a new abstraction for a one-off use case
+- Prefer editing an existing component over creating a near-duplicate
 
 ### Content Guidelines
 
@@ -120,3 +153,24 @@ Testing rules:
 - Empty state, loading state, and error state must all be handled
 
 ## Workflows
+
+### Common Dev Commands
+
+**Frontend (`frontend/`)**
+
+- Install: `pnpm install`
+- Dev server: `pnpm dev`
+- Build: `pnpm build`
+- Preview: `pnpm preview`
+- Typecheck: `pnpm typecheck`
+- Test: `pnpm test`
+- Test (folder): `pnpm test src/features/`
+- Add dependency: `pnpm add <package>`
+
+**Backend (`backend-python/`)**
+
+- Install: `uv sync`
+- Dev server: `uv run uvicorn app.main:app --reload`
+- Test: `uv run pytest`
+- Test (folder): `uv run pytest tests/db/`
+- Add dependency: `uv add <package>`

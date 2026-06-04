@@ -52,8 +52,12 @@ seemypills/frontend/
 
 ## Usage
 
-**Run the Program**
+**Local Development**
 
-> `pnpm run dev`
+```bash
+pnpm dev          # start Vite dev server at http://localhost:5173
+pnpm build        # type-check then bundle for production (tsc && vite build)
+pnpm preview      # preview the production build locally
+```
 
 ## System Design

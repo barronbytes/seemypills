@@ -11,7 +11,12 @@ Parse $ARGUMENTS to get the following values:
 - [filename]: Component name from $ARGUMENTS
 - [summary]: Component summary from $ARGUMENTS
 
-** CRITICAL RULE:** Do not create new file paths without asking first if [FILEPATH] does not exist
+** Reference Files:**
+
+- Do not create new file paths without asking first if [FILEPATH] does not exist
+- The @frontend/src/shared/styles/layout.css file is the file referenced as `layout.css`
+- The @frontend/src/core/component-loader.ts file is referenced below as `component-loader.ts`
+- The @frontend/src/shared/scripts/menu-toggle.ts file is referenced below as `menu-toggle.ts`
 
 ## Task
 
@@ -79,7 +84,7 @@ Make a UI component according to the [filepath], [filename], and [summary] provi
 - Always pull values from the CSS custom properties defined in `layout.css` — do not hardcode color or font values
 - These are the dominant logo colors from `layout.css`:
   - `--logo-blue: #0E1B59;`
-  - `--logo-yellow: #F3B73E;`s
+  - `--logo-yellow: #F3B73E;`
 - Apply the 60-30-10 rule: 60% neutral canvas backgrounds, 30% structural text and secondary containers, 10% accent (`--logo-yellow`, `--logo-blue`) reserved for primary actions and critical feedback
 - Use color scale variables (`--gray-100` through `--gray-900`, `--red-*`, `--green-*`, `--blue-*`, `--orange-*`, `--logo-background`, `--logo-blue`, `--logo-yellow`) — never raw hex values
 

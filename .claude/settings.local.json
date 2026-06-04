@@ -1,6 +1,16 @@
 {
+  "model": "claude-sonnet-4-6",
   "permissions": {
-    "allow": [],
+    "allow": [
+            "Read(**)",
+      "Glob(**)",
+      "Grep(**)",
+      "WebSearch",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)"
+    ],
     "ask": [
       "Bash(git push:*)",
       "Bash(git merge:*)",

@@ -1,9 +1,12 @@
+import pytest
+
 from sqlalchemy import text, create_engine
 
 import app.db.database as database
 from app.core.config import get_settings
 
 
+@pytest.mark.integration
 def test_local_db_connection_passes():
     """
     Check SQLAlchemy connection to local PostgreSQL database.
@@ -21,6 +24,7 @@ def test_local_db_connection_passes():
     assert value == 1
 
 
+@pytest.mark.integration
 def test_aws_rds_connection_passes(monkeypatch):
     """
     Check SQLAlchemy connection to AWS RDS database.

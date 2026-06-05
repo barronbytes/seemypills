@@ -21,3 +21,8 @@ dependencies = [
 dev = [
     "pytest>=9.0.3",
 ]
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests that require external infrastructure (real databases, network) — skipped in CI",
+]

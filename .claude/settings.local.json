@@ -1,0 +1,51 @@
+{
+  "model": "claude-sonnet-4-6",
+  "permissions": {
+    "allow": [
+            "Read(**)",
+      "Glob(**)",
+      "Grep(**)",
+      "WebSearch",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(git merge:*)",
+      "Bash(git rebase:*)",
+      "Bash(docker run:*)",
+      "Bash(kubectl:*)",
+      "Bash(aws:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Edit(**/.env*)",
+      "Edit(**/Dockerfile)",
+      "Edit(**/package.json)",
+      "Edit(**/pyproject.toml)",
+      "Edit(**/tsconfig.json)",
+      "Edit(**/eslint.config.*)",
+      "Edit(**/.github/workflows/*.yml)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(sudo:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(chmod 777:*)",
+      "Bash(npm publish:*)",
+      "Read(./.env)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/secrets/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/id_rsa*)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/credentials)",
+      "Read(~/.aws/config)"
+    ]
+  }
+}

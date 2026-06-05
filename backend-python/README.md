@@ -53,4 +53,14 @@ seemypills/backend-python/
 
 ## Usage
 
+**Local Development**
+
+```bash
+uv run uvicorn app.main:app --reload    # start FastAPI dev server
+uv run pytest -m "not integration"      # run unit tests only (excludes DB connection tests)
+uv run pytest                           # run all tests including integration tests
+uv run pytest tests/db/                 # run a specific test folder
+uv add <package>                        # add a dependency
+```
+
 ## System Design

@@ -18,6 +18,7 @@ seemypills/
 ├── frontend/           # Vanilla TypeScript client (feature-based)
 ├── backend-python/     # Python FastAPI service (vertical slices)
 ├── scripts/            # Shared automation scripts
+├── CLAUDE.md
 └── README.md
 ```
 
@@ -29,6 +30,18 @@ Further sub-project descriptions:
 ## Quick Start
 
 ## Usage
+
+### 🧪 Testing
+
+Run the following commands from their respective subdirectory (`frontend/` or `backend-python/`):
+
+- Frontend Checks
+  - Type Checking: `pnpm typecheck`
+  - Linting: `pnpm lint`
+  - Tests (frontend): `pnpm test`
+  - Build: `pnpm build`
+- Backend Checks
+  - Pytests (backend): `uv run pytest -m "not integration"`
 
 ### 🚀 Production Release Workflow & Scripts
 
@@ -58,7 +71,7 @@ When branch protections are active, follow these steps to move a feature to prod
 1. **GitHub UI:** Open PR from `feature` to `develop` branch; select **squash and merge**
 2. **Local Terminal:** Manually run: `./scripts/git-pr-sync-develop.sh`
 3. **GitHub UI:** Open PR from `develop` to `main` branch; select **rebase and merge**
-4. **GitHub Action:** Automated run: `./.github/workflows/git-pr-sync.yml`
+4. **GitHub Action:** Automated run: `./.github/workflows/git-pr-develop-to-main-sync-branches.yml`
 5. **Local Terminal:** Upate local branches: `./scripts/git-action-sync-local.sh`
 
 #### 🛠️ Emergency & Manual Fallback Scripts
@@ -67,5 +80,7 @@ If the `main` branch ever says it is both "ahead and behind" of the `develop` br
 
 1. **Option A:** Keep `develop` branch intact. Temporarily turn off protection rules for `main` and use the `./scripts/git-unprotected-force-align-main.sh` file to fast-forward sync `main` branch directly.
 2. **Option B:** Keep `main` branch intact. Temporarily turn off protection rules for `develop` and use the `./scripts/git-unprotected-force-align-develop.sh` file to hard-reset and force-push the `develop` branch.
+
+### 🧪 Testing
 
 ## System Design

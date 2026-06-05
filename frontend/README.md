@@ -57,10 +57,11 @@ seemypills/frontend/
 
 ```bash
 pnpm dev          # start Vite dev server at http://localhost:5173
-pnpm build        # type-check then bundle for production (tsc && vite build)
-pnpm preview      # preview the production build locally
 pnpm typecheck    # run TypeScript type checking without emitting files
 pnpm lint         # run ESLint across all source files
+pnpm test         # run Vitest in watch mode for local development
+pnpm build        # type-check then bundle for production (tsc && vite build)
+pnpm preview      # preview the production build locally
 ```
 
 ## System Design

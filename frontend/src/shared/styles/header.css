@@ -1,19 +1,31 @@
-.header-sticky {
+header {
+  width: 100%;
+  border-bottom: 0.1rem solid var(--gray-900);
+  background-color: var(--logo-yellow);
+}
+
+.sticky {
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: var(--logo-background);
-  border-bottom: 0.1rem solid var(--gray-200);
 }
 
 .header-nav {
+  max-width: var(--breakpoint-14);
+  min-width: var(--breakpoint-4);
   margin: 0 auto;
-  padding: var(--gutter-row-padding) var(--gutter-col-padding);
 }
 
-.header-nav-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  justify-content: space-between;
+.header-nav .button-menu {
+  padding: var(--gutter-row-1) var(--gutter-col-padding);
+  border: 0;
+  border-radius: 0;
+  background-color: var(--logo-yellow);
+  color: var(--gray-900);
+}
+
+.header-nav .button-menu:hover,
+.header-nav .button-menu[aria-current="page"] {
+  background-color: var(--gray-900);
+  color: var(--gray-100);
 }

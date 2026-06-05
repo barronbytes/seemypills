@@ -105,13 +105,11 @@ FONT SIZE SYSTEM (px)
 /* ==================== HTML DEFAULTS ==================== */
 
 html {
-    margin: 0 var(--gutter-col-padding);
     scroll-behavior: smooth;
     font-size: 62.5%;
 }
 
 body {
-    max-width: var(--breakpoint-14);
     margin: 0 auto;
     font-family: var(--ff-sans-serif);
     font-size: 1.6rem;

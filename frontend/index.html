@@ -13,17 +13,18 @@
     <link href="./src/shared/styles/reset.css" rel="stylesheet">
     <link href="./src/shared/styles/layout.css" rel="stylesheet">
     <link href="./src/shared/styles/device.css" rel="stylesheet">
+    <!-- Styles -->
+    <script type="module" src="./src/core/component-loader.ts"></script>
 </head>
 <body>
     <!-- Skip Links (hidden visually, visible on focus) -->
-    <a class="skip-nav-link" href="#upload-pill-photo">Skip to upload pill photo</a>
+    <a class="skip-nav-link" href="#nav">Skip to navigation</a>
+    <a class="skip-nav-link" href="#main-content">Skip to main content</a>
 
-    <main id="home" class="grid" tabindex="-1">
-        Insert logo
+    <component-loader src="./src/shared/components/layout/header.html"></component-loader>
 
-        Insert 2 sentences
-
-        Element with two choices
+    <main id="main-content">
+        ...
     </main>
 
 </body>

@@ -13,7 +13,8 @@
     <link href="./src/shared/styles/reset.css" rel="stylesheet">
     <link href="./src/shared/styles/layout.css" rel="stylesheet">
     <link href="./src/shared/styles/device.css" rel="stylesheet">
-    <link href="./src/shared/styles/header.css" rel="stylesheet">
+    <link href="./src/shared/styles/page/index.css" rel="stylesheet">
+    <link href="./src/shared/styles/component/header.css" rel="stylesheet">
     <!-- Styles -->
     <script type="module" src="./src/core/component-loader.ts"></script>
     <script type="module" src="./src/shared/scripts/nav-active.ts"></script>
@@ -26,7 +27,13 @@
     <component-loader src="./src/shared/components/layout/header.html"></component-loader>
 
     <main id="main-content">
-        ...
+        <img class="home-logo" src="./public/images/branding/logo_icon_only.png" alt="See My Pills: Medicate Safely logo. A smiling, yellow capsule mascot wearing a doctor's lab coat gives two thumbs up.">
+        <p>
+            Prescription labels can be hard to see. <strong>See My Pills</strong> helps you medicate with confidence.
+            Click below to share or take a photo, and we will help you see and hear it.
+        </p>
+        <a href="/share-photo" class="button-main">Start Medication Scan</a>
+
     </main>
 
 </body>

@@ -24,8 +24,12 @@ header {
   color: var(--gray-900);
 }
 
-.header-nav .button-menu:hover,
-.header-nav .button-menu[aria-current="page"] {
+.header-nav .button-menu:hover {
   background-color: var(--gray-900);
   color: var(--gray-100);
+}
+
+.header-nav .button-menu[aria-current="page"] {
+  background-color: var(--gray-900);
+  color: var(--logo-yellow);
 }

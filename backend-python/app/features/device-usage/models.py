@@ -8,7 +8,7 @@ from app.db.base import Base
 from app.db.mixins import PrimaryKeyMixin, TimestampMixin
 
 
-class DeviceUsage(Base, PrimaryKeyMixin, TimestampMixin):
+class Device(Base, PrimaryKeyMixin, TimestampMixin):
     """
     Defines table for storing usage limit data. 
     Total daily unique users limited by device fingerprint.

@@ -9,6 +9,11 @@ from app.db.mixins import PrimaryKeyMixin, TimestampMixin
 
 
 class DeviceUsage(Base, PrimaryKeyMixin, TimestampMixin):
+    """
+    Defines table for storing usage limit data. 
+    Total daily unique users limited by device fingerprint.
+    Individual user usage limited by the hour.
+    """
     __tablename__ = "device_usage"
 
     RATE_LIMIT_DURATION: timedelta = timedelta(hours=1)

@@ -3,7 +3,3 @@
 .home-logo {
     height: var(--gutter-row-10);
 }
-
-main p {
-    width: 70rem;
-}

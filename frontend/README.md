@@ -27,7 +27,10 @@ seemypills/frontend/
 │   └── app.ts              # Main application entry point
 ├── tests/
 ├── .env
+├── .gitignore
+├── 404.html
 ├── index.html              # Main HTML entry point
+├── eslint.config.js        # Static anaysis to catch errors and enforce code styles
 ├── package.json            # Dependencies (managed via pnpm)
 ├── tsconfig.json           # TypeScript configuration
 └── README.md

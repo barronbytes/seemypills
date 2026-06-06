@@ -215,6 +215,7 @@ a {
     color: var(--gray-900);
     font-family: var(--ff-serif);
     transition: background-color 200ms ease-in-out;
+    cursor: pointer;
 }
 
 .cta-yellow:hover {
@@ -232,6 +233,7 @@ a {
     font-family: var(--ff-serif);
     font-weight: 500;
     transition: background-color 200ms ease-in-out;
+    cursor: pointer;
 }
 
 .cta-blue:hover {
@@ -249,6 +251,7 @@ a {
     font-family: var(--ff-serif);
     font-weight: 500;
     transition: background-color 200ms ease-in-out;
+    cursor: pointer;
 }
 
 .cta-red:hover {
@@ -266,6 +269,7 @@ a {
     font-family: var(--ff-serif);
     font-weight: 500;
     transition: background-color 200ms ease-in-out;
+    cursor: pointer;
 }
 
 .cta-gray:hover {

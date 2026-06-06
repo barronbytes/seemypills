@@ -4,7 +4,7 @@ document.addEventListener('component-loaded', (event: Event) => {
 
   const currentPath = window.location.pathname;
 
-  document.querySelectorAll<HTMLAnchorElement>('.header-nav .button-menu').forEach(link => {
+  document.querySelectorAll<HTMLAnchorElement>('.header-nav .cta-yellow').forEach(link => {
     const linkPath = new URL(link.href, window.location.origin).pathname;
     const isHome = (currentPath === '/' || currentPath === '/index.html') && (linkPath === '/' || linkPath === '/index.html');
     const isMatch = linkPath !== '/index.html' && linkPath !== '/' && currentPath === linkPath;

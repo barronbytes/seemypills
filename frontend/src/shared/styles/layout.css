@@ -204,37 +204,75 @@ a {
     transform: translateY(0);
 }
 
-/* ==================== UTILITY CLASSES ==================== */
+/* ==================== CALL TO ACTION ==================== */
 
-.button-main {
+.cta-yellow {
     display: inline-block;
-    padding: var(--gutter-row-padding) var(--gutter-col-padding);
-    border: 0.1rem solid var(--logo-blue);
+    padding: var(--gutter-row-1);
+    border: 0.1rem solid var(--gray-900);
+    border-radius: 0.5rem;
+    background-color: var(--logo-yellow);
+    color: var(--gray-900);
+    font-family: var(--ff-serif);
+    transition: background-color 200ms ease-in-out;
+    cursor: pointer;
+}
+
+.cta-yellow:hover {
+    background-color: var(--gray-900);
+    color: var(--gray-100);
+}
+
+.cta-blue {
+    display: inline-block;
+    padding: var(--gutter-row-1);
+    border: 0.1rem solid var(--gray-900);
     border-radius: 0.5rem;
     background-color: var(--logo-blue);
     color: var(--gray-100);
     font-family: var(--ff-serif);
+    font-weight: 500;
     transition: background-color 200ms ease-in-out;
+    cursor: pointer;
 }
 
-.button-main:hover {
-    border-color: var(--gray-500);
-    background-color: var(--logo-yellow);
-    color: var(--gray-900);
+.cta-blue:hover {
+    background-color: var(--gray-900);
+    color: var(--gray-100);
 }
 
-.button-menu {
+.cta-red {
     display: inline-block;
-    padding: var(--gutter-row-padding) var(--gutter-col-padding);
+    padding: var(--gutter-row-1);
+    border: 0.1rem solid var(--gray-900);
+    border-radius: 0.5rem;
+    background-color: var(--red-500);
+    color: var(--gray-100);
+    font-family: var(--ff-serif);
+    font-weight: 500;
+    transition: background-color 200ms ease-in-out;
+    cursor: pointer;
+}
+
+.cta-red:hover {
+    background-color: var(--gray-900);
+    color: var(--gray-100);
+}
+
+.cta-gray {
+    display: inline-block;
+    padding: var(--gutter-row-1);
     border: 0.1rem solid var(--gray-300);
     border-radius: 0.5rem;
     background-color: var(--gray-100);
     color: var(--gray-900);
     font-family: var(--ff-serif);
+    font-weight: 500;
     transition: background-color 200ms ease-in-out;
+    cursor: pointer;
 }
 
-.button-menu:hover {
+.cta-gray:hover {
     border-color: var(--gray-900);
     background-color: var(--logo-blue);
     color: var(--gray-100);
@@ -245,4 +283,15 @@ a {
 .underline-yellow {
     color: var(--gray-900);
     background: linear-gradient(to top, var(--logo-yellow) 10%, transparent 40%);
+}
+
+/* ==================== PAGES ==================== */
+
+main {
+    margin: 0 auto;
+    max-width: var(--breakpoint-14);
+    min-width: var(--breakpoint-4);
+    align-items: center;
+    gap: var(--gutter-row-2);
+    text-align: center;
 }

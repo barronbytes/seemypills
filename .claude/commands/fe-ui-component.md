@@ -16,7 +16,7 @@ Parse $ARGUMENTS to get the following values:
 - Do not create new file paths without asking first if [FILEPATH] does not exist
 - The @frontend/src/shared/styles/layout.css file is the file referenced as `layout.css`
 - The @frontend/src/core/component-loader.ts file is referenced below as `component-loader.ts`
-- The @frontend/src/shared/scripts/menu-toggle.ts file is referenced below as `menu-toggle.ts`
+- The @frontend/src/shared/scripts/header-breakpoint-toggle-menu.ts file is referenced below as `header-breakpoint-toggle-menu.ts`
 
 ## Task
 
@@ -30,7 +30,7 @@ Check if file path to file already exists as follows: `./frontend/src/shared/com
 ### Accessibility
 
 - All interactive elements must have descriptive `aria-label` attributes
-- Buttons that toggle state must manage `aria-expanded` (see `menu-toggle.ts` for the pattern)
+- Buttons that toggle state must manage `aria-expanded` (see `header-breakpoint-toggle-menu.ts` for the pattern)
 - `header.html` must include a skip navigation link using the `.skip-nav-link` class that targets the main content landmark
 - Use `.sr-only` for any text that should be read by screen readers but not visible on screen
 - All text/background color pairings must meet WCAG AAA contrast ratios (7:1 minimum)
@@ -48,7 +48,7 @@ Check if file path to file already exists as follows: `./frontend/src/shared/com
   — Use `--gutter-col-padding` (10px) as the base unit, other increments exist, don't create new ones without asking
 - Padding: Default inner padding for components is `var(--gutter-row-padding) var(--gutter-col-padding)` (8px top/bottom, 10px left/right)
 - Borders: Follow all the `.button-menu` patterns from `layout.css`:
-  - Default colors: `border: 0.1rem solid <color>-300`, `background-color: <color>-100`, and `color: var(--<color>-900)`
+  - Default colors: follow the `cta-gray` guidelines for new component boundaries (margin, border, padding)
   - Hover colors: should invert the background and font values from default
   - Transitions: `border-radius: 0.5rem` and `transition: background-color 200ms ease-in-out`
   - Colors may vary by component context but the structural pattern must be followed
@@ -61,11 +61,11 @@ Check if file path to file already exists as follows: `./frontend/src/shared/com
 
 ### IDs and Class Names (header.html only)
 
-- `menu-toggle.ts` targets these specific selectors — they must be present and unchanged:
+- `header-breakpoint-toggle-menu.ts` targets these specific selectors — they must be present and unchanged:
   - `#mobile-section` — the collapsible nav block
   - `.toggle-menu.open` — the hamburger button that opens the menu
   - `.toggle-menu.close` — the X button that closes the menu
-- Do not rename or restructure these because they are defined in `menu-toggle.ts` and must remain unchanged
+- Do not rename or restructure these because they are defined in `header-breakpoint-toggle-menu.ts` and must remain unchanged
 
 ### Responsive Design
 

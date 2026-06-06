@@ -16,20 +16,12 @@ header {
   margin: 0 auto;
 }
 
-.header-nav .button-menu {
-  padding: var(--gutter-row-1) var(--gutter-col-padding);
+.header-nav .cta-yellow {
   border: 0;
   border-radius: 0;
-  background-color: var(--logo-yellow);
-  color: var(--gray-900);
 }
 
-.header-nav .button-menu:hover {
-  background-color: var(--gray-900);
-  color: var(--gray-100);
-}
-
-.header-nav .button-menu[aria-current="page"] {
+.header-nav .cta-yellow[aria-current="page"] {
   background-color: var(--gray-900);
   color: var(--logo-yellow);
 }

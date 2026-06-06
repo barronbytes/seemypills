@@ -1,0 +1,18 @@
+/* ==================== HOME PAGE ==================== */
+
+main {
+    margin: 0 auto;
+    max-width: var(--breakpoint-14);
+    min-width: var(--breakpoint-4);
+    align-items: center;
+    gap: var(--gutter-row-2);
+    text-align: center;
+}
+
+.home-logo {
+    height: var(--gutter-row-10);
+}
+
+main p {
+    width: 70rem;
+}

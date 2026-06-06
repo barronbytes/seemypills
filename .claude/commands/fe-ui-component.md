@@ -1,5 +1,5 @@
 ---
-description: Create a UI Component in `./frontend/src/shared/components/`
+description: Create or update a UI Component in `./frontend/src/shared/components/`
 argument-hint: Component file path | Component file name | Component summary
 ---
 
@@ -20,12 +20,10 @@ Parse $ARGUMENTS to get the following values:
 
 ## Task
 
-Make a UI component according to the [filepath], [filename], and [summary] provided, following these guidelines:
-
-- Convert [filepath] (if present) and filename into lowercase letters with hypens between words
+Check if file path to file already exists as follows: `./frontend/src/shared/components/[filepath]/[filename].html`. If so, then follow the [summary] instructions to update the existing UI component. If not, then use the [summary] to create the new component using the following instructions to create the file path:
+- Convert [filepath] and [filename] to lowercase letters, using hypens to separate words
 - Create the component file in `./frontend/src/shared/components/[filepath]/[filename].html`
-  - Resolve filepath to avoid `./frontend/src/shared/components/some-path//some-name.html` for nested [filepath] values
-- Reference the [summary] when making the component
+- Resolve filepath to avoid `./frontend/src/shared/components/some-path//some-name.html` for nested [filepath] values
 
 ## Guidelines
 

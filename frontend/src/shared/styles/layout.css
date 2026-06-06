@@ -26,6 +26,9 @@ FONT SIZE SYSTEM (px)
     --gutter-col-2: 4rem;
     --gutter-col-3: 6rem;
     --gutter-col-4: 8rem;
+    --gutter-col-5: 10rem;
+    --gutter-col-6: 12rem;
+    --gutter-col-7: 14rem;
     --gutter-row-padding: 0.8rem;
     --gutter-row-1: 1.6rem;
     --gutter-row-2: 3.2rem;
@@ -105,13 +108,11 @@ FONT SIZE SYSTEM (px)
 /* ==================== HTML DEFAULTS ==================== */
 
 html {
-    margin: 0 var(--gutter-col-padding);
     scroll-behavior: smooth;
     font-size: 62.5%;
 }
 
 body {
-    max-width: var(--breakpoint-14);
     margin: 0 auto;
     font-family: var(--ff-sans-serif);
     font-size: 1.6rem;
@@ -208,18 +209,18 @@ a {
 .button-main {
     display: inline-block;
     padding: var(--gutter-row-padding) var(--gutter-col-padding);
-    border: 0.1rem solid var(--logo-yellow);
+    border: 0.1rem solid var(--logo-blue);
     border-radius: 0.5rem;
-    background-color: var(--logo-yellow);
-    color: var(--gray-900);
+    background-color: var(--logo-blue);
+    color: var(--gray-100);
     font-family: var(--ff-serif);
     transition: background-color 200ms ease-in-out;
 }
 
 .button-main:hover {
-    border-color: var(--gray-900);
-    background-color: var(--logo-blue);
-    color: var(--gray-100);
+    border-color: var(--gray-500);
+    background-color: var(--logo-yellow);
+    color: var(--gray-900);
 }
 
 .button-menu {

@@ -2,10 +2,11 @@ from datetime import time, timedelta, timezone
 
 from sqlalchemy import String
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 from app.db.mixins import PrimaryKeyMixin, TimestampMixin
+from app.features.upload_bottle import Bottle
 
 
 class Device(Base, PrimaryKeyMixin, TimestampMixin):
@@ -28,3 +29,5 @@ class Device(Base, PrimaryKeyMixin, TimestampMixin):
     def attempts_remaining(self) -> int:
         remaining = self.HOURLY_SINGLE_USER_USAGE_LIMIT - self.hourly_user_usage       
         return max(0, remaining)
+    
+    bottle: Mapped["Bottle"] = relationship(back_populates="device")

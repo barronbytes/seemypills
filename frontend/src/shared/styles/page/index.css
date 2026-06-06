@@ -1,14 +1,18 @@
 /* ==================== HOME PAGE ==================== */
 
 main {
-  max-width: var(--breakpoint-14);
-  min-width: var(--breakpoint-4);
-  margin: 0 auto;
-  padding: 0 var(--gutter-col-4);
-  text-align: center;
+    margin: 0 auto;
+    max-width: var(--breakpoint-14);
+    min-width: var(--breakpoint-4);
+    align-items: center;
+    gap: var(--gutter-row-2);
+    text-align: center;
 }
 
 .home-logo {
-  height: var(--gutter-row-10);
-  margin: 0 auto;
+    height: var(--gutter-row-10);
+}
+
+main p {
+    width: 70rem;
 }

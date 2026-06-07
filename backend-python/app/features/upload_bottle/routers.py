@@ -2,6 +2,7 @@ import logging
 
 from fastapi import APIRouter, UploadFile, File, HTTPException, status
 
+from app.core.api_response_schemas import StandardResponse
 from app.db.session import SessionPublic
 from app.features.upload_bottle.schemas import BottleResponse
 from app.features.upload_bottle.services import BottleService
@@ -18,7 +19,7 @@ router = APIRouter(tags=["Medication Bottles"])
 
 @router.post(
     "/",
-    response_model=BottleResponse,
+    response_model=StandardResponse[BottleResponse],
     status_code=status.HTTP_201_CREATED,
     summary="Upload medication bottle image",
     description="Processes an image of a medication bottle using OCR and saves the parsed brand name to the database."
@@ -26,7 +27,7 @@ router = APIRouter(tags=["Medication Bottles"])
 async def create_bottle_record(
     db: SessionPublic,
     file: UploadFile = File(...)
-) -> BottleResponse:
+) -> StandardResponse[BottleResponse]:
     """Endpoint route to receive form data photo uploads.
     No authentication required.
     """
@@ -41,7 +42,7 @@ async def create_bottle_record(
         logger.info("Phase II (Execute Service): Handing off file asset tracking payload to internal service routines.")
         response_data = bottle_service.create_bottle(file=file)
         logger.info("Phase II (Execute Service): Success. Service layer transaction completed and returned data package.")
-        return response_data
+        return StandardResponse(payload=response_data)
 
     # III. EXCEPTION HANDLING
     except HTTPException as http_err:

@@ -1,4 +1,5 @@
 import logging
+from typing import TYPE_CHECKING
 
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -6,6 +7,10 @@ from fastapi import UploadFile, HTTPException, status
 
 from app.features.upload_bottle.schemas import BottleResponse
 from app.features.upload_bottle.models import Bottle
+
+# Type-checking-only import: avoids loading numpy at runtime, matching this file's lazy-import pattern for heavy ML libraries
+if TYPE_CHECKING:
+    from numpy import ndarray
 
 logger = logging.getLogger(__name__)
 
@@ -23,19 +28,8 @@ class BottleService:
         y_coordinates = [point[1] for point in bounding_box]
         return (max(x_coordinates) - min(x_coordinates)) * (max(y_coordinates) - min(y_coordinates))
 
-    # =========================================================================
-    # CREATE
-    # =========================================================================
-
-    def create_bottle(self, file: UploadFile) -> BottleResponse:
-        """Create a new medication bottle record with extracted photo text."""
-        
-        # I. PERMISSIONS (RBAC/ABAC)
-        logger.info("Phase I (Permissions): Checking request authorization constraints.")
-        logger.info("Phase I (Permissions): Success. Authorization check bypassed for MVP.")
-
-        # II. GUARDRAILS (VALIDATE)
-        logger.info("Phase II (Guardrails): Starting file payload validation and OCR processing routines.")
+    def _decode_bottle_image(self, file: UploadFile) -> "ndarray":
+        """Validate an uploaded image's format and decode it into a processable image matrix."""
 
         # CHECK #1: Exit if wrong file type
         if not file.content_type.startswith("image/"):
@@ -49,42 +43,89 @@ class BottleService:
         try:
             # Lazy import heavy ML libraries to reduce app load latency
             import cv2
-            import easyocr
             import numpy as np
 
             # Image Decoding Pipeline: binary stream (upload) ➜ bytes ➜ 1-D array ➜ 3-D array
             image_bytes = file.file.read()
             image_array = np.frombuffer(buffer=image_bytes, dtype=np.uint8)
             image = cv2.imdecode(buf=image_array, flags=cv2.IMREAD_COLOR)
-            
+
             # CHECK #2: Image not processed as 3-D np array
             if image is None:
                 raise ValueError("OpenCV failed to decode binary matrix stream.")
 
             # TODO: Add OpenCV adjustments (grayscale, thresholding)
 
+            return image
+
+        # CHECK #3: Catch image decoding runtime exceptions
+        except Exception as decode_err:
+            logger.exception(f"Fatal processing failure inside internal image decoding sequence: {str(decode_err)}")
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Unable to successfully process the provided image file. Try uploading a clearer, well-lit photo."
+            )
+
+    def _run_ocr_pipeline(self, image: "ndarray") -> tuple[str, str]:
+        """Run the OCR engine against a decoded image matrix and extract its brand name and raw text."""
+
+        try:
+            # Lazy import heavy ML libraries to reduce app load latency
+            import easyocr
+
             # Text Extraction Pipeline: AI Engine ➜ (bounding box, text, confidence) blocks ➜ raw text block
             reader = easyocr.Reader(['en'], gpu=False)
             ocr_results = reader.readtext(image, detail=1)
             extracted_raw_text = " ".join(text for _, text, _ in ocr_results).strip()
 
+            # CHECK #1: Exit early if the OCR engine detected no readable text at all
+            if not ocr_results:
+                logger.warning("OCR engine completed but detected no readable text in the provided image.")
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail="No readable text was found on the label. Try uploading a clearer, well-lit photo."
+                )
+
             # Brand Name Heuristic: medication labels ususally print the brand name as the largest text on the bottle,
             # so the OCR block with the largest bounding-box area is taken as the brand name candidate.
-            if ocr_results:
-                largest_block = max(ocr_results, key=lambda result: self._bounding_box_area(result[0]))
-                parsed_brand_name = largest_block[1].strip()
-            else:
-                parsed_brand_name = "Extracted Generic Label"
+            largest_block = max(ocr_results, key=lambda result: self._bounding_box_area(result[0]))
+            parsed_brand_name = largest_block[1].strip()
 
-            logger.info("Phase II (Guardrails): Success. File validated and text pipelines executed cleanly.")
+            return parsed_brand_name, extracted_raw_text
 
-        # CHECK #3: Catch processing or machine learning model runtime exceptions
+        # CHECK #2: Catch and re-raise expected HTTP validations originating from this scope's own boundary checks
+        except HTTPException as http_err:
+            raise http_err
+
+        # CHECK #3: Catch OCR engine runtime exceptions
         except Exception as ocr_err:
             logger.exception(f"Fatal processing failure inside internal ML OCR engine sequence: {str(ocr_err)}")
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail="Unable to successfully extract textual details from the provided image file."
             )
+
+    def _extract_bottle_text(self, file: UploadFile) -> tuple[str, str]:
+        """Validate an uploaded image and run the OCR pipeline to extract its brand name and raw text."""
+        image = self._decode_bottle_image(file)
+        parsed_brand_name, extracted_raw_text = self._run_ocr_pipeline(image)
+        return parsed_brand_name, extracted_raw_text
+
+    # =========================================================================
+    # CREATE
+    # =========================================================================
+
+    def create_bottle(self, file: UploadFile) -> BottleResponse:
+        """Create a new medication bottle record with extracted photo text."""
+        
+        # I. PERMISSIONS (RBAC/ABAC)
+        logger.info("Phase I (Permissions): Checking request authorization constraints.")
+        logger.info("Phase I (Permissions): Success. Authorization check bypassed for MVP.")
+
+        # II. GUARDRAILS (VALIDATE)
+        logger.info("Phase II (Guardrails): Starting file payload validation and OCR processing routines.")
+        parsed_brand_name, extracted_raw_text = self._extract_bottle_text(file)
+        logger.info("Phase II (Guardrails): Success. Image processing & OCR pipeline determined medication label information.")
 
         # III. MAPPING (PYDANTIC ➔ SQLALCHEMY)
         logger.info("Phase III (Mapping): Converting Pydantic payload schema to SQLAlchemy database model.")

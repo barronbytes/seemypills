@@ -11,6 +11,11 @@ logger = logging.getLogger(__name__)
 router = APIRouter(tags=["Medication Bottles"])
 
 
+# =========================================================================
+# # POST
+# =========================================================================
+
+
 @router.post(
     "/",
     response_model=BottleResponse,
@@ -22,23 +27,32 @@ async def create_bottle_record(
     db: SessionPublic,
     file: UploadFile = File(...)
 ) -> BottleResponse:
-    """Endpoint route to receive form data photo uploads."""
+    """Endpoint route to receive form data photo uploads.
+    No authentication required.
+    """
     
-    # 1. Initialize service
+    # I. INITIALIZE SERVICE
+    logger.info("Phase I (Initialize Service): Injecting public database session dependency into service context.")
     bottle_service = BottleService(db)
+    logger.info("Phase I (Initialize Service): Success. Service layer instantiated cleanly.")
 
-    # 2. Execute service
+    # II. EXECUTE SERVICE
     try:
+        logger.info("Phase II (Execute Service): Handing off file asset tracking payload to internal service routines.")
         response_data = bottle_service.create_bottle(file=file)
+        logger.info("Phase II (Execute Service): Success. Service layer transaction completed and returned data package.")
         return response_data
 
-    # 3. Exception Handling
+    # III. EXCEPTION HANDLING
     except HTTPException as http_err:
-        # Re-raise known exceptions coming from the service layer boundaries untouched
+        # CHECK #1: Catch and re-raise expected HTTP validations originating from service layer boundaries untouched
+        logger.warning(f"Phase III (Exception Handling): Service level boundary gracefully rejected request -> Status {http_err.status_code}")
         raise http_err
         
     except Exception as unexpected_err:
-        # Catch-all guard for unhandled errors escaping the service scope execution matrices
+        # CHECK #2: Catch-all guard for unhandled errors escaping the service scope execution matrices
+        logger.error("Phase III (Exception Handling): Intercepted critical unhandled runtime error at the HTTP wrapper layer.")
+        logger.critical(f"Phase III (Exception Handling): Failure detail -> {str(unexpected_err)}")
         logger.error(f"Router intercepted unhandled server execution failure: {str(unexpected_err)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -111,9 +111,9 @@ class BottleService:
         parsed_brand_name, extracted_raw_text = self._run_ocr_pipeline(image)
         return parsed_brand_name, extracted_raw_text
 
-    # =========================================================================
+    # ======================================================================
     # CREATE
-    # =========================================================================
+    # ======================================================================
 
     def create_bottle(self, file: UploadFile) -> BottleResponse:
         """Create a new medication bottle record with extracted photo text."""

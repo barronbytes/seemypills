@@ -1,5 +1,5 @@
-from uuid import UUID
 from sqlalchemy.orm import Session
+
 from app.features.upload_bottle.schemas import (
     BottleCreate,
     BottleResponse

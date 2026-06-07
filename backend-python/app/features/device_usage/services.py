@@ -1,11 +1,8 @@
 from sqlalchemy.orm import Session
 
 from app.features.device_usage.schemas import (
-    DeviceUsageBase,
     DeviceUsageCreate,
-    DeviceUsageResponse,
-    DeviceUsageUpdate,
-    DeviceUsageDelete
+    DeviceUsageResponse
 )
 
 
@@ -32,7 +29,7 @@ class DeviceService:
         """Query the database for count of all devices permitted to interact with app since DAILY_RESET_TIME"""
         pass
 
-    def get_device_by_fingerprint(self, device_data: DeviceUsageBase) -> DeviceUsageResponse | None:
+    def get_device_by_fingerprint(self, device_fingerprint: str) -> DeviceUsageResponse | None:
         """Query the database for a record matching a unique fingerprint string."""
         pass
 
@@ -40,7 +37,7 @@ class DeviceService:
     # UPDATE
     # ======================================================================
 
-    def increment_device_usage(self, device_data: DeviceUsageBase, update_data: DeviceUsageUpdate) -> DeviceUsageResponse:
+    def increment_device_usage(self, device_fingerprint: str) -> DeviceUsageResponse:
         """Update device usage count for successfully performed actions."""
         pass
 
@@ -52,6 +49,6 @@ class DeviceService:
     # DELETE (softly)
     # ======================================================================
 
-    def soft_delete_device(self, device_data: DeviceUsageBase, delete_data: DeviceUsageDelete) -> DeviceUsageResponse:
+    def soft_delete_device(self, device_fingerprint: str) -> DeviceUsageResponse:
         """Delete a record softly with soft_delete mixin"""
         pass

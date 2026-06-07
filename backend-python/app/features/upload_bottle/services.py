@@ -4,10 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import UploadFile, HTTPException, status
 
-from app.features.upload_bottle.schemas import (
-    BottleCreate,
-    BottleResponse
-)
+from app.features.upload_bottle.schemas import BottleResponse
 from app.features.upload_bottle.models import Bottle
 
 logger = logging.getLogger(__name__)
@@ -19,11 +16,18 @@ class BottleService:
         """Initialize the service and inject the persistence layer database session."""
         self.db = db
 
+    @staticmethod
+    def _bounding_box_area(bounding_box: list[list[float]]) -> float:
+        """Estimate the printed area of an OCR text block from its four corner points."""
+        x_coordinates = [point[0] for point in bounding_box]
+        y_coordinates = [point[1] for point in bounding_box]
+        return (max(x_coordinates) - min(x_coordinates)) * (max(y_coordinates) - min(y_coordinates))
+
     # =========================================================================
     # CREATE
     # =========================================================================
 
-    def create_bottle(self, bottle_data: BottleCreate, file: UploadFile) -> BottleResponse:
+    def create_bottle(self, file: UploadFile) -> BottleResponse:
         """Create a new medication bottle record with extracted photo text."""
         
         # I. PERMISSIONS (RBAC/ABAC)
@@ -59,16 +63,22 @@ class BottleService:
 
             # TODO: Add OpenCV adjustments (grayscale, thresholding)
 
-            # Text Extraction & Fallback Pipeline: AI Engine ➜ List of Words ➜ Single Text Block ➜ Final Label String
+            # Text Extraction Pipeline: AI Engine ➜ (bounding box, text, confidence) blocks ➜ raw text block
             reader = easyocr.Reader(['en'], gpu=False)
-            ocr_results = reader.readtext(image, detail=0)
-            extracted_raw_text = " ".join(ocr_results).strip()
+            ocr_results = reader.readtext(image, detail=1)
+            extracted_raw_text = " ".join(text for _, text, _ in ocr_results).strip()
 
-            # TODO: Add string parsing heuristics to evaluate raw string into a brand name
-            parsed_brand_name = bottle_data.brand_name if bottle_data.brand_name else "Extracted Generic Label"
+            # Brand Name Heuristic: medication labels ususally print the brand name as the largest text on the bottle,
+            # so the OCR block with the largest bounding-box area is taken as the brand name candidate.
+            if ocr_results:
+                largest_block = max(ocr_results, key=lambda result: self._bounding_box_area(result[0]))
+                parsed_brand_name = largest_block[1].strip()
+            else:
+                parsed_brand_name = "Extracted Generic Label"
 
             logger.info("Phase II (Guardrails): Success. File validated and text pipelines executed cleanly.")
 
+        # CHECK #3: Catch processing or machine learning model runtime exceptions
         except Exception as ocr_err:
             logger.exception(f"Fatal processing failure inside internal ML OCR engine sequence: {str(ocr_err)}")
             raise HTTPException(

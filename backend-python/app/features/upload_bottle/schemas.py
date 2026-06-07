@@ -29,11 +29,6 @@ class BottleUpdate(BaseModel):
     model_config = ConfigDict(validate_assignment=True)
 
     brand_name: str | None = Field(default=None)
-    generic_name: str | None = Field(default=None)
-    dosage: str | None = Field(default=None)
-    dosage_frequency: str | None = Field(default=None)
-    prescribing_doctor: str | None = Field(default=None)
-    expiration_date: str | None = Field(default=None)
 
 
 class BottleDelete(BaseModel):

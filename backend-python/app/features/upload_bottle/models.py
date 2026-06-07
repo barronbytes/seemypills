@@ -1,7 +1,4 @@
-from typing import TYPE_CHECKING
-from uuid import UUID
-
-from sqlalchemy import ForeignKey, String, Text
+from sqlalchemy import String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -18,9 +15,4 @@ class Bottle(Base, PrimaryKeyMixin, TimestampMixin):
 
 
     brand_name: Mapped[str] = mapped_column(String, nullable=False)
-    generic_name: Mapped[str | None] = mapped_column(String, default=None)
-    dosage: Mapped[str | None] = mapped_column(String, default=None)
-    dosage_frequency: Mapped[str | None] = mapped_column(String, default=None)
-    prescribing_doctor: Mapped[str | None] = mapped_column(String, default=None)
-    expiration_date: Mapped[str | None] = mapped_column(String, default=None)
     ocr_raw_text: Mapped[str | None] = mapped_column(Text, default=None)

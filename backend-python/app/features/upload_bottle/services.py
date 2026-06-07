@@ -80,11 +80,6 @@ class BottleService:
         logger.info("Phase III (Mapping): Converting Pydantic payload schema to SQLAlchemy database model.")
         db_bottle = Bottle(
             brand_name=parsed_brand_name,
-            generic_name=bottle_data.generic_name,
-            dosage=bottle_data.dosage,
-            dosage_frequency=bottle_data.dosage_frequency,
-            prescribing_doctor=bottle_data.prescribing_doctor,
-            expiration_date=bottle_data.expiration_date,
             ocr_raw_text=extracted_raw_text
         )
         logger.info("Phase III (Mapping): Success. Conversion complete.")

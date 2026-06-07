@@ -31,9 +31,12 @@ class BottleService:
         logger.info("Phase I (Permissions): Success. Authorization check bypassed for MVP.")
 
         # II. GUARDRAILS (VALIDATE)
-        # Exit if wrong file type
+        logger.info("Phase II (Guardrails): Starting file payload validation and OCR processing routines.")
+
+        # CHECK #1: Exit if wrong file type
         if not file.content_type.startswith("image/"):
             logger.error(f"Validation failed. Rejected invalid file format: {file.content_type}")
+            file.close()
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Uploaded file must be a valid image format (PNG/JPEG)."
@@ -45,29 +48,26 @@ class BottleService:
             import easyocr
             import numpy as np
 
-            logger.info(f"Processing image upload for device.")
+            # Image Decoding Pipeline: binary stream (upload) ➜ bytes ➜ 1-D array ➜ 3-D array
             image_bytes = file.file.read()
+            image_array = np.frombuffer(buffer=image_bytes, dtype=np.uint8)
+            image = cv2.imdecode(buf=image_array, flags=cv2.IMREAD_COLOR)
             
-            # Convert raw file memory buffer straight into an OpenCV numeric matrix
-            nparr = np.frombuffer(image_bytes, np.uint8)
-            img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            
-            if img is None:
+            # CHECK #2: Image not processed as 3-D np array
+            if image is None:
                 raise ValueError("OpenCV failed to decode binary matrix stream.")
 
-            # TODO: Add custom OpenCV processing adjustments (grayscale, thresholding, etc.)
+            # TODO: Add OpenCV adjustments (grayscale, thresholding)
 
-            # 3. Fire up the EasyOCR reading engine targeting English medical labels
-            reader = easyocr.Reader(['en'], gpu=False)  # Set to True if infrastructure utilizes CUDA
-            ocr_results = reader.readtext(img, detail=0)
-            
-            # Combine array list segments cleanly into a single target string block
+            # Text Extraction & Fallback Pipeline: AI Engine ➜ List of Words ➜ Single Text Block ➜ Final Label String
+            reader = easyocr.Reader(['en'], gpu=False)
+            ocr_results = reader.readtext(image, detail=0)
             extracted_raw_text = " ".join(ocr_results).strip()
-            logger.info("OCR raw text block reading successfully concluded.")
 
-            # TODO: Insert your string parsing heuristics here to evaluate raw string into a brand name.
-            # For MVP demo fallback purposes, we default to the schema's raw string or fallback string.
+            # TODO: Add string parsing heuristics to evaluate raw string into a brand name
             parsed_brand_name = bottle_data.brand_name if bottle_data.brand_name else "Extracted Generic Label"
+
+            logger.info("Phase II (Guardrails): Success. File validated and text pipelines executed cleanly.")
 
         except Exception as ocr_err:
             logger.exception(f"Fatal processing failure inside internal ML OCR engine sequence: {str(ocr_err)}")
@@ -97,6 +97,7 @@ class BottleService:
             self.db.refresh(db_bottle)
             logger.info(f"Phase IV (Execution): Success. Bottle record created with ID: {db_bottle.id}")
             return BottleResponse.model_validate(db_bottle)
+        
         # V. EXCEPTION HANDLING
         except SQLAlchemyError as db_err:
             logger.error("Phase V (Exception Handling): Intercepted structural transaction failure.")

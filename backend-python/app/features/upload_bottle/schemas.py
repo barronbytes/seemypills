@@ -8,13 +8,7 @@ class BottleBase(BaseModel):
 
 
 class BottleCreate(BottleBase):
-    device_id: UUID
-
-    generic_name: str | None = None
-    dosage: str | None = None
-    dosage_frequency: str | None = None
-    prescribing_doctor: str | None = None
-    expiration_date: str | None = None
+    brand_name: str | None = None
     ocr_raw_text: str | None = None         # source of truth
 
 
@@ -22,7 +16,7 @@ class BottleResponse(BottleBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
-    generic_name: str | None
+    brand_name: str | None
 
 
 class BottleUpdate(BaseModel):

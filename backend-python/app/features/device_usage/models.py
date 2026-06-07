@@ -3,13 +3,10 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import String
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
 from app.db.mixins import PrimaryKeyMixin, TimestampMixin
-
-if TYPE_CHECKING:
-    from app.features.upload_bottle.models import Bottle
 
 
 class Device(Base, PrimaryKeyMixin, TimestampMixin):
@@ -32,5 +29,3 @@ class Device(Base, PrimaryKeyMixin, TimestampMixin):
     def attempts_remaining(self) -> int:
         remaining = self.HOURLY_SINGLE_USER_USAGE_LIMIT - self.hourly_user_usage       
         return max(0, remaining)
-    
-    bottles: Mapped[list["Bottle"]] = relationship(back_populates="device")

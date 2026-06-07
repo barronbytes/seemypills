@@ -22,7 +22,6 @@ class BottleResponse(BottleBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
-    device_id: UUID
     generic_name: str | None
 
 

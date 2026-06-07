@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from fastapi import UploadFile
 
 from app.features.upload_bottle.schemas import (
     BottleCreate,
@@ -17,6 +18,6 @@ class BottleService:
     # CREATE
     # =========================================================================
 
-    def create_bottle(self, bottle_data: BottleCreate) -> BottleResponse:
-        """Create a new medication bottle record with extracted text."""
+    def create_bottle(self, bottle_data: BottleCreate, file: UploadFile) -> BottleResponse:
+        """Create a new medication bottle record with extracted photo text."""
         pass

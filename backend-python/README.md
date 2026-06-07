@@ -63,4 +63,22 @@ uv run pytest tests/db/                 # run a specific test folder
 uv add <package>                        # add a dependency
 ```
 
+### Database Workflow
+
+Terminal PostgreSQL:
+
+```bash
+sudo psql -U <db_user> -d <db_name>     # enter the database console
+\l                                      # list all databases (run inside psql)
+\dt                                     # list tables in the current database (run inside psql)
+```
+
+Alembic Workflow: When a model in `app/features/<feature>/models.py` changes, track it with a migration:
+
+1. Edit the model: Update the SQLAlchemy model in `models.py`
+2. Generate the migration: Run `uv run alembic revision --autogenerate -m "describe the change"`
+3. Review the file: Check the generated `upgrade()`/`downgrade()` in the new `alembic/versions/` file
+4. Commit together: Commit the migration file alongside the model change in the same PR
+5. Apply the migration: Run `uv run alembic upgrade head`
+
 ## System Design

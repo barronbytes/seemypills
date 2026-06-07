@@ -8,7 +8,7 @@ class BottleBase(BaseModel):
 
 
 class BottleCreate(BottleBase):
-    brand_name: str | None = None
+    brand_name: str
     ocr_raw_text: str | None = None         # source of truth
 
 
@@ -16,7 +16,7 @@ class BottleResponse(BottleBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
-    brand_name: str | None
+    brand_name: str
 
 
 class BottleUpdate(BaseModel):

@@ -1,19 +1,14 @@
 import logging
-from typing import Annotated
 
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, status
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, UploadFile, File, HTTPException, status
 
-from app.db.session import get_db
+from app.db.session import SessionPublic
 from app.features.upload_bottle.schemas import BottleResponse
-from app.features.upload_bottle.services import BottleService  # Adjust import path if needed
+from app.features.upload_bottle.services import BottleService
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["Medication Bottles"])
-
-# Define the public database dependency injection type shortcut
-SessionPublic = Annotated[Session, Depends(get_db)]
 
 
 @router.post(

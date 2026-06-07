@@ -1,0 +1,43 @@
+from datetime import datetime
+from uuid import UUID
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class BottleBase(BaseModel):
+    brand_name: str
+
+
+class BottleCreate(BottleBase):
+    device_id: UUID
+
+    generic_name: str | None = None
+    dosage: str | None = None
+    dosage_frequency: str | None = None
+    prescribing_doctor: str | None = None
+    expiration_date: str | None = None
+    ocr_raw_text: str | None = None         # source of truth
+
+
+class BottleResponse(BottleBase):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    device_id: UUID
+    generic_name: str | None
+
+
+class BottleUpdate(BaseModel):
+    model_config = ConfigDict(validate_assignment=True)
+
+    brand_name: str | None = Field(default=None)
+    generic_name: str | None = Field(default=None)
+    dosage: str | None = Field(default=None)
+    dosage_frequency: str | None = Field(default=None)
+    prescribing_doctor: str | None = Field(default=None)
+    expiration_date: str | None = Field(default=None)
+
+
+class BottleDelete(BaseModel):
+    model_config = ConfigDict(validate_assignment=True)
+
+    deleted_at: datetime | None = Field(default=None)

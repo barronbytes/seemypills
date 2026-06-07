@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from sqlalchemy import ForeignKey, String, Text
@@ -5,7 +6,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 from app.db.mixins import PrimaryKeyMixin, TimestampMixin
-from app.features.device_usage.models import Device
+
+if TYPE_CHECKING:
+    from app.features.device_usage.models import Device
 
 
 class Bottle(Base, PrimaryKeyMixin, TimestampMixin):
@@ -29,4 +32,4 @@ class Bottle(Base, PrimaryKeyMixin, TimestampMixin):
     prescribing_doctor: Mapped[str | None] = mapped_column(String, default=None)
     expiration_date: Mapped[str | None] = mapped_column(String, default=None)
 
-    device: Mapped["Device"] = relationship(back_populates="bottle")
+    device: Mapped["Device"] = relationship(back_populates="bottles")

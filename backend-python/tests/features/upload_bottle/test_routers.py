@@ -2,22 +2,41 @@ from unittest.mock import MagicMock
 from uuid import uuid4
 
 import pytest
-from fastapi import HTTPException, status
+from fastapi import FastAPI, HTTPException, status
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
+from app.core.api_exception_handlers import http_exception_handler, unhandled_exception_handler
 from app.db.session import get_db
 from app.features.upload_bottle import routers
+from app.features.upload_bottle.routers import router as upload_bottle_router
 from app.features.upload_bottle.schemas import BottleResponse
-from app.main import app
+
+
+def _build_test_app() -> FastAPI:
+    """
+    Build a minimal FastAPI app wired with only the bottle router and the
+    same global exception handlers as the real app. This avoids importing
+    app.main, which constructs Settings() at import time and therefore
+    requires environment configuration that test environments (like CI)
+    don't provide.
+    """
+    test_app = FastAPI()
+    test_app.add_exception_handler(HTTPException, http_exception_handler)
+    test_app.add_exception_handler(Exception, unhandled_exception_handler)
+    test_app.include_router(upload_bottle_router, prefix="/bottles")
+    return test_app
+
+
+test_app = _build_test_app()
 
 
 @pytest.fixture()
 def client():
     """Provide a TestClient with the database dependency overridden by a mock session, isolating router tests from real database infrastructure."""
-    app.dependency_overrides[get_db] = lambda: MagicMock(spec=Session)
-    yield TestClient(app)
-    app.dependency_overrides.clear()
+    test_app.dependency_overrides[get_db] = lambda: MagicMock(spec=Session)
+    yield TestClient(test_app)
+    test_app.dependency_overrides.clear()
 
 
 def _build_upload_payload() -> dict:

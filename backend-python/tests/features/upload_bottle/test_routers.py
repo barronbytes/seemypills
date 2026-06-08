@@ -21,22 +21,22 @@ def _build_test_app() -> FastAPI:
     requires environment configuration that test environments (like CI)
     don't provide.
     """
-    test_app = FastAPI()
-    test_app.add_exception_handler(HTTPException, http_exception_handler)
-    test_app.add_exception_handler(Exception, unhandled_exception_handler)
-    test_app.include_router(upload_bottle_router, prefix="/bottles")
-    return test_app
+    bottle_test_app = FastAPI()
+    bottle_test_app.add_exception_handler(HTTPException, http_exception_handler)
+    bottle_test_app.add_exception_handler(Exception, unhandled_exception_handler)
+    bottle_test_app.include_router(upload_bottle_router, prefix="/bottles")
+    return bottle_test_app
 
 
-test_app = _build_test_app()
+_test_app = _build_test_app()
 
 
 @pytest.fixture()
 def client():
     """Provide a TestClient with the database dependency overridden by a mock session, isolating router tests from real database infrastructure."""
-    test_app.dependency_overrides[get_db] = lambda: MagicMock(spec=Session)
-    yield TestClient(test_app)
-    test_app.dependency_overrides.clear()
+    _test_app.dependency_overrides[get_db] = lambda: MagicMock(spec=Session)
+    yield TestClient(_test_app)
+    _test_app.dependency_overrides.clear()
 
 
 def _build_upload_payload() -> dict:

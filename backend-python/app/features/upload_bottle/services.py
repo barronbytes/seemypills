@@ -62,7 +62,7 @@ class BottleService:
         except Exception as decode_err:
             logger.exception(f"Fatal processing failure inside internal image decoding sequence: {str(decode_err)}")
             raise HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
                 detail="Unable to successfully process the provided image file. Try uploading a clearer, well-lit photo."
             )
 
@@ -82,7 +82,7 @@ class BottleService:
             if not ocr_results:
                 logger.warning("OCR engine completed but detected no readable text in the provided image.")
                 raise HTTPException(
-                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
                     detail="No readable text was found on the label. Try uploading a clearer, well-lit photo."
                 )
 
@@ -101,7 +101,7 @@ class BottleService:
         except Exception as ocr_err:
             logger.exception(f"Fatal processing failure inside internal ML OCR engine sequence: {str(ocr_err)}")
             raise HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
                 detail="Unable to successfully extract textual details from the provided image file."
             )
 

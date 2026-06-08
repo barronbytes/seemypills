@@ -117,7 +117,7 @@ def test_run_ocr_pipeline_with_blank_image_fails(_shared_ocr_reader):
     with pytest.raises(HTTPException) as exc_info:
         service._run_ocr_pipeline(decoded_image)
 
-    assert exc_info.value.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert exc_info.value.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
     assert "No readable text" in exc_info.value.detail
 
 
@@ -133,7 +133,7 @@ def test_run_ocr_pipeline_with_malformed_image_matrix_fails(_shared_ocr_reader):
     with pytest.raises(HTTPException) as exc_info:
         service._run_ocr_pipeline(malformed_image)
 
-    assert exc_info.value.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert exc_info.value.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
     assert "Unable to successfully extract textual details" in exc_info.value.detail
 
 

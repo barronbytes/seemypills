@@ -69,8 +69,26 @@ def test_decode_bottle_image_with_wrong_file_format_fails():
 # ======================================================================
 
 
+@pytest.fixture(scope="module")
+def _shared_ocr_reader():
+    """
+    Load the EasyOCR model once for this module and patch easyocr.Reader to
+    return that single instance, so the three integration tests below share
+    one set of ML weights in memory instead of each loading its own.
+    """
+    import easyocr
+
+    monkeypatch = pytest.MonkeyPatch()
+    shared_reader = easyocr.Reader(['en'], gpu=False)
+    monkeypatch.setattr(easyocr, "Reader", lambda *args, **kwargs: shared_reader)
+
+    yield
+
+    monkeypatch.undo()
+
+
 @pytest.mark.integration
-def test_run_ocr_pipeline_with_real_photo_succeeds():
+def test_run_ocr_pipeline_with_real_photo_succeeds(_shared_ocr_reader):
     """
     Check that _run_ocr_pipeline extracts a brand name and raw text from a
     decoded real bottle photo, with the raw text longer than the brand name.
@@ -87,7 +105,7 @@ def test_run_ocr_pipeline_with_real_photo_succeeds():
 
 
 @pytest.mark.integration
-def test_run_ocr_pipeline_with_blank_image_fails():
+def test_run_ocr_pipeline_with_blank_image_fails(_shared_ocr_reader):
     """
     Check that _run_ocr_pipeline raises HTTPException when the OCR engine
     detects no readable text in a decoded blank image.
@@ -104,7 +122,7 @@ def test_run_ocr_pipeline_with_blank_image_fails():
 
 
 @pytest.mark.integration
-def test_run_ocr_pipeline_with_malformed_image_matrix_fails():
+def test_run_ocr_pipeline_with_malformed_image_matrix_fails(_shared_ocr_reader):
     """
     Check that _run_ocr_pipeline raises HTTPException when given an array
     that is not a valid image matrix and the OCR engine fails internally.

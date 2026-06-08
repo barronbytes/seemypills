@@ -21,7 +21,6 @@ seemypills/backend-python/
 ├── tests/
 ├── .env.development        # Local environmental variables
 ├── .env.production         # AWS enviornmental variables
-├── main.py                 # Application runner
 ├── pyproject.toml          # Dependencies (managed via uv)
 ├── uv.lock
 └── README.md
@@ -47,6 +46,7 @@ seemypills/backend-python/
 - opencv-python >=4.13.0.92: image preprocessing and computer vision
 - httpx >=0.28.1: async-capable HTTP client
 - python-dotenv >=1.2.2: `.env` file loading
+- python-multipart >=0.0.32: parses multipart form data for file uploads
 ```
 
 ## Quick Start

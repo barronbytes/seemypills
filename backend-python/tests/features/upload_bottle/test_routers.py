@@ -57,7 +57,7 @@ def test_create_bottle_record_returns_created_with_payload_on_success(monkeypatc
     expected_response = BottleResponse(id=uuid4(), brand_name="Tylenol")
     mock_service_instance = MagicMock()
     mock_service_instance.create_bottle.return_value = expected_response
-    monkeypatch.setattr(routers, "BottleService", lambda db: mock_service_instance)
+    monkeypatch.setattr(routers, "BottleService", lambda _db: mock_service_instance)
 
     response = client.post("/bottles/", files=_build_upload_payload())
 
@@ -78,7 +78,7 @@ def test_create_bottle_record_propagates_http_exception_from_service(monkeypatch
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="No readable text was found on the label. Try uploading a clearer, well-lit photo."
     )
-    monkeypatch.setattr(routers, "BottleService", lambda db: mock_service_instance)
+    monkeypatch.setattr(routers, "BottleService", lambda _db: mock_service_instance)
 
     response = client.post("/bottles/", files=_build_upload_payload())
 
@@ -95,7 +95,7 @@ def test_create_bottle_record_wraps_unexpected_exception_as_internal_server_erro
     """
     mock_service_instance = MagicMock()
     mock_service_instance.create_bottle.side_effect = RuntimeError("simulated unexpected failure")
-    monkeypatch.setattr(routers, "BottleService", lambda db: mock_service_instance)
+    monkeypatch.setattr(routers, "BottleService", lambda _db: mock_service_instance)
 
     response = client.post("/bottles/", files=_build_upload_payload())
 

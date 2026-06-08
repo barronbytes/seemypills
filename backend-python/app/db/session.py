@@ -1,5 +1,6 @@
-from typing import Generator
+from typing import Annotated, Generator
 
+from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.db.database import SessionLocal
@@ -26,3 +27,7 @@ def get_db() -> Generator[Session, None, None]:
         yield db_session
     finally:
         db_session.close()
+
+
+# Database sessions for router layer
+SessionPublic = Annotated[Session, Depends(get_db)]

@@ -14,6 +14,7 @@ Monorepo combining a feature-based frontend and a vertically-sliced backend:
 
 ```bash
 seemypills/
+├── .claude/            # Claude Code configurations and workflows
 ├── .github/            # CI/CD workflows and GitHub Actions
 ├── frontend/           # Vanilla TypeScript client (feature-based)
 ├── backend-python/     # Python FastAPI service (vertical slices)
@@ -41,7 +42,9 @@ Run the following commands from their respective subdirectory (`frontend/` or `b
   - Tests (frontend): `pnpm test`
   - Build: `pnpm build`
 - Backend Checks
-  - Pytests (backend): `uv run pytest -m "not integration"`
+  - Pytests (backend): `uv run pytest tests/folder/ -m "not integration"`
+  - Pytests (backend): `uv run pytest tests/<filepath>.py -m "not integration"`
+  - Pytests (backend): `uv run pytest tests/<filepath>.py -m integration`
 
 ### 🚀 Production Release Workflow & Scripts
 

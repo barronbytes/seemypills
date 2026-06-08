@@ -17,6 +17,11 @@ class AppSettings(BaseModel):
     log_level: str
 
 
+class CorsSettings(BaseModel):
+    """Cross-origin resource sharing allow-list for the frontend's origin(s)"""
+    allowed_origins: list[str]
+
+
 class DatabaseSettings(BaseModel):
     """Database connection information"""
     db_user: str
@@ -34,18 +39,19 @@ class DatabaseSettings(BaseModel):
 
 
 class AWSSettings(BaseModel):
-    """ 
+    """
     AWS credentials + region information for production environment
     Set defaults to initialize empty instance for development environment
     """
     access_key_id: Optional[str] = None
-    secret_access_key: Optional[SecretStr] = None  
+    secret_access_key: Optional[SecretStr] = None
     default_region: str = "us-east-1"
 
 
 class Settings(BaseSettings):
     """Pydantic generates fields directly from environmental variables"""
     app_info: AppSettings
+    cors_info: CorsSettings
     db_info: DatabaseSettings
     aws_info: AWSSettings = AWSSettings()
 

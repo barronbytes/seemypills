@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.api_exception_handlers import http_exception_handler, unhandled_exception_handler
 from app.core.config import get_settings
@@ -32,6 +33,13 @@ app = FastAPI(
     debug=settings.app_info.debug,
     description="Processes photos of prescription bottle labels and returns medication dosage information for audio-visual playback.",
     lifespan=lifespan
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_info.allowed_origins,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.add_exception_handler(HTTPException, http_exception_handler)

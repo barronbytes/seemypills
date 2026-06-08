@@ -41,7 +41,9 @@ Run the following commands from their respective subdirectory (`frontend/` or `b
   - Tests (frontend): `pnpm test`
   - Build: `pnpm build`
 - Backend Checks
-  - Pytests (backend): `uv run pytest -m "not integration"`
+  - Pytests (backend): `uv run pytest tests/folder/ -m "not integration"`
+  - Pytests (backend): `uv run pytest tests/<filepath>.py -m "not integration"`
+  - Pytests (backend): `uv run pytest tests/<filepath>.py -m integration`
 
 ### 🚀 Production Release Workflow & Scripts
 

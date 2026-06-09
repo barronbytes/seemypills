@@ -14,7 +14,6 @@ This frontend is a vanilla TypeScript application deployed on AWS, built using a
 seemypills/frontend/
 ├── public/                 # Static runtime assets not processed by Vite (served from domain root)
 │   ├── components/         # Reusable HTML snippet fragments injected dynamically at runtime via JavaScript
-│   │   └── layout/         # Layout snippets (e.g., header.html, footer.html)
 │   ├── icons/              # App favicons and site tile graphics
 │   └── images/             # Branding assets
 ├── src/

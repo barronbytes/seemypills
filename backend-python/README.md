@@ -58,11 +58,12 @@ seemypills/backend-python/
 
 ```bash
 uv run uvicorn app.main:app --reload    # start FastAPI dev server
-uv run pytest -m "not integration"      # run unit tests only (excludes DB connection tests)
-uv run pytest                           # run all tests including integration tests
-uv run pytest tests/folder/             # run tests on speciic folder
-uv run pytest tests/folder/file.py -v   # run tests on specific file (-v flag is optional)
 uv add <package>                        # add a dependency
+uv run pytest                           # run all tests
+uv run pytest -m "not integration"      # run tests (exclude integration tests)
+uv run pytest -m "integration"          # run tests (only integration tests)
+uv run pytest tests/folder/             # run tests on speciic folder
+uv run pytest tests/folder/file.py      # run tests on specific file
 ```
 
 ### Database Workflow

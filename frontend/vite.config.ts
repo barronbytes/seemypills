@@ -8,6 +8,7 @@ export default defineConfig({
         // 1. Define every physical HTML page as an explicit entry point using standard URL paths
         main: new URL('index.html', import.meta.url).pathname,
         notFound: new URL('404.html', import.meta.url).pathname,
+        uploadBottle: new URL('src/pages/upload-bottle.html', import.meta.url).pathname,
       },
     },
   },

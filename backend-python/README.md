@@ -12,6 +12,7 @@ This backend is a Python FastAPI service deployed on AWS, built using a vertical
 
 ```bash
 seemypills/backend-python/
+├── alembic/                # Database migrations
 ├── app/
 │   ├── core/               # Global setup (config, logging, security)
 │   ├── db/                 # Database layer (base, session, mixins)

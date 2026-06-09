@@ -33,6 +33,7 @@ seemypills/frontend/
 ├── eslint.config.js        # Static anaysis to catch errors and enforce code styles
 ├── package.json            # Dependencies (managed via pnpm)
 ├── tsconfig.json           # TypeScript configuration
+├── vite-env.d.ts
 └── README.md
 
 ## Prerequisite Installations

@@ -21,6 +21,7 @@
     "vitest": "^4.1.8"
   },
   "dependencies": {
-    "@fingerprintjs/fingerprintjs": "^5.2.0"
+    "@fingerprintjs/fingerprintjs": "^5.2.0",
+    "zod": "^4.4.3"
   }
 }

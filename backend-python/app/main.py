@@ -19,25 +19,25 @@ settings = get_settings()
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Initialize the database engine and session factory before the app serves requests."""
     logger.info(
-        f"Starting {settings.app_info.app_name} "
-        f"(environment={settings.app_info.env}, debug={settings.app_info.debug})"
+        f"Starting {settings.app_info.APP_NAME} "
+        f"(environment={settings.app_info.ENV}, debug={settings.app_info.DEBUG})"
     )
     setup_database()
     yield
-    logger.info(f"Shutting down {settings.app_info.app_name}")
+    logger.info(f"Shutting down {settings.app_info.APP_NAME}")
 
 
 app = FastAPI(
-    title=settings.app_info.app_name,
-    version=settings.app_info.app_version,
-    debug=settings.app_info.debug,
+    title=settings.app_info.APP_NAME,
+    version=settings.app_info.APP_VERSION,
+    debug=settings.app_info.DEBUG,
     description="Processes photos of prescription bottle labels and returns medication dosage information for audio-visual playback.",
     lifespan=lifespan
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_info.allowed_origins,
+    allow_origins=settings.cors_info.ALLOWED_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )

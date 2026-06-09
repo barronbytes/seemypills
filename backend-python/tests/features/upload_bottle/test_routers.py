@@ -21,22 +21,22 @@ def _build_test_app() -> FastAPI:
     requires environment configuration that test environments (like CI)
     don't provide.
     """
-    test_app = FastAPI()
-    test_app.add_exception_handler(HTTPException, http_exception_handler)
-    test_app.add_exception_handler(Exception, unhandled_exception_handler)
-    test_app.include_router(upload_bottle_router, prefix="/bottles")
-    return test_app
+    bottle_test_app = FastAPI()
+    bottle_test_app.add_exception_handler(HTTPException, http_exception_handler)
+    bottle_test_app.add_exception_handler(Exception, unhandled_exception_handler)
+    bottle_test_app.include_router(upload_bottle_router, prefix="/bottles")
+    return bottle_test_app
 
 
-test_app = _build_test_app()
+_test_app = _build_test_app()
 
 
 @pytest.fixture()
 def client():
     """Provide a TestClient with the database dependency overridden by a mock session, isolating router tests from real database infrastructure."""
-    test_app.dependency_overrides[get_db] = lambda: MagicMock(spec=Session)
-    yield TestClient(test_app)
-    test_app.dependency_overrides.clear()
+    _test_app.dependency_overrides[get_db] = lambda: MagicMock(spec=Session)
+    yield TestClient(_test_app)
+    _test_app.dependency_overrides.clear()
 
 
 def _build_upload_payload() -> dict:
@@ -57,7 +57,7 @@ def test_create_bottle_record_returns_created_with_payload_on_success(monkeypatc
     expected_response = BottleResponse(id=uuid4(), brand_name="Tylenol")
     mock_service_instance = MagicMock()
     mock_service_instance.create_bottle.return_value = expected_response
-    monkeypatch.setattr(routers, "BottleService", lambda db: mock_service_instance)
+    monkeypatch.setattr(routers, "BottleService", lambda _db: mock_service_instance)
 
     response = client.post("/bottles/", files=_build_upload_payload())
 
@@ -78,7 +78,7 @@ def test_create_bottle_record_propagates_http_exception_from_service(monkeypatch
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail="No readable text was found on the label. Try uploading a clearer, well-lit photo."
     )
-    monkeypatch.setattr(routers, "BottleService", lambda db: mock_service_instance)
+    monkeypatch.setattr(routers, "BottleService", lambda _db: mock_service_instance)
 
     response = client.post("/bottles/", files=_build_upload_payload())
 
@@ -95,7 +95,7 @@ def test_create_bottle_record_wraps_unexpected_exception_as_internal_server_erro
     """
     mock_service_instance = MagicMock()
     mock_service_instance.create_bottle.side_effect = RuntimeError("simulated unexpected failure")
-    monkeypatch.setattr(routers, "BottleService", lambda db: mock_service_instance)
+    monkeypatch.setattr(routers, "BottleService", lambda _db: mock_service_instance)
 
     response = client.post("/bottles/", files=_build_upload_payload())
 

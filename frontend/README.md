@@ -4,9 +4,9 @@ This frontend is a vanilla TypeScript application deployed on AWS, built using a
 
 ## Tech Stack
 
-**Frontend:** Vanilla TypeScript (HTML/CSS/TS)
-**Runtime:** Web Browser (Client-side)
-**Tooling:** pnpm, Vite, Vitest, ESLint
+- **Frontend:** Vanilla TypeScript (HTML/CSS/TS)
+- **Runtime:** Web Browser (Client-side)
+- **Tooling:** pnpm, Vite, Vitest, ESLint
 
 ## Project Structure
 

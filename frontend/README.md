@@ -12,18 +12,22 @@ This frontend is a vanilla TypeScript application deployed on AWS, built using a
 
 ```bash
 seemypills/frontend/
-├── public/                 # Static runtime assets not processed by Vite for dynamically injected HTML
+├── public/                 # Static runtime assets not processed by Vite (served from domain root)
+│   ├── components/         # Reusable HTML snippet fragments injected dynamically at runtime via JavaScript
+│   │   └── layout/         # Layout snippets (e.g., header.html, footer.html)
+│   ├── icons/              # App favicons and site tile graphics
+│   └── images/             # Branding assets
 ├── src/
 │   ├── assets/             # Static build time assets processed by Vite for index.html or imported by TypeScript
-│   ├── core/               # App infrastructure (API client, routing, global stores)
+│   ├── core/               # App infrastructure (API client, component loader, routing, global stores)
 │   │   ├── lib/
 │   │   ├── store/
-│   │   ├── shared/
 │   │   ├── api-client.ts
+│   │   ├── component-loader.ts
 │   │   └── router.ts
 │   ├── features/           # Domain pages/modules
-│   ├── pages/              # Individual app pages
-│   ├── shared/             # Reusable UI components, scripts, styles, typs, util, etc.
+│   ├── pages/              # Individual app pages (must register as MPA entry points in vite.config.ts)
+│   ├── shared/             # Reusable UI scripts, styles, types, util, etc.
 │   └── app.ts              # Main application entry point
 ├── tests/
 ├── .gitignore

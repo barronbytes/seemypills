@@ -4,36 +4,41 @@ This frontend is a vanilla TypeScript application deployed on AWS, built using a
 
 ## Tech Stack
 
-**Frontend:** Vanilla TypeScript (HTML/CSS/TS)
-**Runtime:** Web Browser (Client-side)
-**Tooling:** pnpm, Vite, Vitest, ESLint
+- **Frontend:** Vanilla TypeScript (HTML/CSS/TS)
+- **Runtime:** Web Browser (Client-side)
+- **Tooling:** pnpm, Vite, Vitest, ESLint
 
 ## Project Structure
 
 ```bash
 seemypills/frontend/
-├── public/                 # Static runtime assets not processed by Vite for dynamically injected HTML
+├── public/                 # Static runtime assets not processed by Vite (served from domain root)
+│   ├── components/         # Reusable HTML snippet fragments injected dynamically at runtime via JavaScript
+│   ├── icons/              # App favicons and site tile graphics
+│   └── images/             # Branding assets
 ├── src/
 │   ├── assets/             # Static build time assets processed by Vite for index.html or imported by TypeScript
-│   ├── core/               # App infrastructure (API client, routing, global stores)
+│   ├── core/               # App infrastructure (API client, component loader, routing, global stores)
 │   │   ├── lib/
 │   │   ├── store/
-│   │   ├── shared/
 │   │   ├── api-client.ts
+│   │   ├── component-loader.ts
 │   │   └── router.ts
 │   ├── features/           # Domain pages/modules
-│   ├── pages/              # Individual app pages
-│   ├── shared/             # Reusable UI components, scripts, styles, typs, util, etc.
+│   ├── pages/              # Individual app pages (must register as MPA entry points in vite.config.ts)
+│   ├── shared/             # Reusable UI scripts, styles, types, util, etc.
 │   └── app.ts              # Main application entry point
 ├── tests/
-├── .env
 ├── .gitignore
+├── .env.development
+├── .env.production
 ├── 404.html
 ├── index.html              # Main HTML entry point
 ├── eslint.config.js        # Static anaysis to catch errors and enforce code styles
 ├── package.json            # Dependencies (managed via pnpm)
+├── pnpm-lock.yaml          # Locked versions of dependencies for deterministic builds
 ├── tsconfig.json           # TypeScript configuration
-├── vite-env.d.ts
+├── vite.config.ts          # Vite build configuration and entry points for the multi-page application (MPA)
 └── README.md
 
 ## Prerequisite Installations

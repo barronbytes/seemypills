@@ -2,6 +2,11 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   root: '.', // Keeps the root directory as frontend/
+  test: {
+    env: {
+      VITE_API_BASE_URL: 'http://localhost:8000',
+    },
+  },
   build: {
     rollupOptions: {
       input: {

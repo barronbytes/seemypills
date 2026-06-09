@@ -26,14 +26,16 @@ seemypills/frontend/
 │   ├── shared/             # Reusable UI components, scripts, styles, typs, util, etc.
 │   └── app.ts              # Main application entry point
 ├── tests/
-├── .env
 ├── .gitignore
+├── .env.development
+├── .env.production
 ├── 404.html
 ├── index.html              # Main HTML entry point
 ├── eslint.config.js        # Static anaysis to catch errors and enforce code styles
 ├── package.json            # Dependencies (managed via pnpm)
+├── pnpm-lock.yaml          # Locked versions of dependencies for deterministic builds
 ├── tsconfig.json           # TypeScript configuration
-├── vite-env.d.ts
+├── vite.config.ts          # Vite build configuration and entry points for the multi-page application (MPA)
 └── README.md
 
 ## Prerequisite Installations

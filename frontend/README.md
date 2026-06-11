@@ -44,8 +44,8 @@ seemypills/frontend/
 ## Prerequisite Installations
 
 - IDE (VS Code, Cursor, etc.)
-- Node.js v22.15.0 or higher
-- pnpm v9.x or higher (Package Manager)
+- Node.js v22.22.3 or higher
+- pnpm v11.5.3 or higher (Package Manager)
 
 ## Dev Dependencies
 - TypeScript version 5.9+: static typing and compilation, provided by pnpm

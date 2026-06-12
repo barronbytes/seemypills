@@ -31,6 +31,8 @@ export default defineConfig({
     },
     {
       name: 'flatten-page-html-output',
+      // Runs after vite:build-html (which emits HTML into the bundle) so the entries exist to rename
+      enforce: 'post',
       // Relocates built HTML pages from src/pages/ to the dist root so production paths stay clean
       generateBundle(_options, bundle) {
         for (const fileName in bundle) {

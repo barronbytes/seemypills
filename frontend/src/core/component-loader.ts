@@ -23,13 +23,8 @@ class ComponentLoader extends HTMLElement {
       .catch(err => {
         console.error(`ComponentLoader error (${src}):`, err);
         
-        // 1. Check if the app is running locally in development mode
-        if (import.meta.env.DEV) {
-          window.location.href = '/src/pages/404.html';
-        } else {
-          // 2. Fall back to the flat root layout when deployed live on AWS production
-          window.location.href = '/404.html';
-        }
+        // both development and production fall back to root entry point
+        window.location.href = '/404.html';
       });
   }
 }

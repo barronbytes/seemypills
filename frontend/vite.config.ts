@@ -13,7 +13,7 @@ export default defineConfig({
   // Force Vite to treat this as a true Multi-Page Application (MPA) in development
   appType: 'mpa', 
 
-  // Add a dev-only routing rewrite rule using standard Vite server configuration middleware
+  // Vite plugins: dev-only routing rewrite, plus build-time HTML output flattening
   plugins: [
     {
       name: 'local-html-page-rewrites',
@@ -27,6 +27,25 @@ export default defineConfig({
         };
 
         server.middlewares.use(rewriteUploadBottlePath);
+      },
+    },
+    {
+      name: 'flatten-page-html-output',
+      // Runs after vite:build-html (which emits HTML into the bundle) so the entries exist to rename
+      enforce: 'post',
+      // Relocates built HTML pages from src/pages/ to the dist root so production paths stay clean
+      generateBundle(_options, bundle) {
+        for (const fileName of Object.keys(bundle)) {
+          const file = bundle[fileName];
+          if (fileName.startsWith('src/pages/') && file.type === 'asset') {
+            this.emitFile({
+              type: 'asset',
+              fileName: fileName.replace('src/pages/', ''),
+              source: file.source,
+            });
+            delete bundle[fileName];
+          }
+        }
       },
     },
   ],

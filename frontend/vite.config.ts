@@ -35,11 +35,14 @@ export default defineConfig({
       enforce: 'post',
       // Relocates built HTML pages from src/pages/ to the dist root so production paths stay clean
       generateBundle(_options, bundle) {
-        for (const fileName in bundle) {
-          if (fileName.startsWith('src/pages/')) {
-            const flattenedFileName = fileName.replace('src/pages/', '');
-            bundle[fileName].fileName = flattenedFileName;
-            bundle[flattenedFileName] = bundle[fileName];
+        for (const fileName of Object.keys(bundle)) {
+          const file = bundle[fileName];
+          if (fileName.startsWith('src/pages/') && file.type === 'asset') {
+            this.emitFile({
+              type: 'asset',
+              fileName: fileName.replace('src/pages/', ''),
+              source: file.source,
+            });
             delete bundle[fileName];
           }
         }

@@ -44,8 +44,6 @@ echo "🗄️ Running database migrations via Alembic..."
 ENV=production uv run alembic upgrade head
 
 echo "🔄 Cycling application services via Systemd..."
-# Kill any stray worker instances securely without dropping the pipeline
-sudo pkill -f uvicorn || true
 
 # Let systemd cleanly restart the designated server daemon with the fresh code
 sudo systemctl restart seemypills

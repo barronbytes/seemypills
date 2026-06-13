@@ -1,0 +1,30 @@
+name: Continuous Deployment - Main Update
+
+on:
+  workflow_run:
+    workflows: ["Automated PR Branch Synchronization"]
+    types: [completed]
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    
+    # 1. Map your secrets to clean environment variables at the job level
+    env:
+      SSH_KEY: ${{ secrets.SEEMYPILLS_EC2_SSH_PRIVATE_KEY }}
+      HOST_IP: ${{ secrets.SEEMYPILLS_EC2_HOST }}
+
+    steps:
+      - name: Configure SSH access
+        run: |
+          mkdir -p ~/.ssh
+          # 2. Reference standard linux environment variables ($SSH_KEY / $HOST_IP) instead
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$HOST_IP" >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/deploy_key ubuntu@"$HOST_IP" \
+            "cd ~/seemypills && bash scripts/cd-main-update-deploy.sh"

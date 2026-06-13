@@ -1,0 +1,24 @@
+name: Continuous Deployment - Main Update
+
+on:
+  workflow_run:
+    workflows: ["Automated PR Branch Synchronization"]
+    types: [completed]
+
+jobs:
+  deploy:
+    # Runs only after the branch-sync workflow completes successfully
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure SSH access
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/deploy_key ubuntu@${{ secrets.EC2_HOST }} \
+            "cd ~/seemypills && bash scripts/cd-main-update-deploy.sh"

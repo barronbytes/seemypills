@@ -16,7 +16,6 @@ Monorepo combining a feature-based frontend and a vertically-sliced backend:
 seemypills/
 ├── .claude/            # Claude Code configurations and workflows
 ├── .github/            # CI/CD workflows and GitHub Actions
-├── .vscode/            # Project level editor settings
 ├── frontend/           # Vanilla TypeScript client (feature-based)
 ├── backend-python/     # Python FastAPI service (vertical slices)
 ├── scripts/            # Shared automation scripts

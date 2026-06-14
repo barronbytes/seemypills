@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Non-interactive SSH shells don't source ~/.bashrc, so add uv's install location explicitly
+export PATH="$HOME/.local/bin:$PATH"
+
 echo "🚀 Starting automated deployment for SeeMyPills..."
 
 # Ensure in root repository directory

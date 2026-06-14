@@ -27,8 +27,10 @@ seemypills/frontend/
 │   ├── features/           # Domain pages/modules
 │   ├── pages/              # Individual app pages (must register as MPA entry points in vite.config.ts)
 │   ├── shared/             # Reusable UI scripts, styles, types, util, etc.
-│   └── app.ts              # Main application entry point
+│   ├── app.ts              # Main application entry point
+│   └── vite-env.d.ts
 ├── tests/
+├── vite/                   # Vite plugins and build-time helpers used by vite.config.ts
 ├── .gitignore
 ├── .env.development
 ├── .env.production

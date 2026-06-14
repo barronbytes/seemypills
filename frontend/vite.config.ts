@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config';
-import { discoverPages } from './scripts/vite-util-discover-pages';
-import { routeRewriterPlugin } from './scripts/vite-plugin-route-rewriter';
-import { flattenHtmlOutputPlugin } from './scripts/vite-plugin-flatten-html';
+import { discoverPages } from './vite/vite-util-discover-pages';
+import { routeRewriterPlugin } from './vite/vite-plugin-route-rewriter';
+import { flattenHtmlOutputPlugin } from './vite/vite-plugin-flatten-html';
 
 const pages = discoverPages();
 const pageInputs = Object.fromEntries(

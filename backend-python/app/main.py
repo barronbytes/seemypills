@@ -9,6 +9,7 @@ from app.core.api_exception_handlers import http_exception_handler, unhandled_ex
 from app.core.config import get_settings
 from app.db.database import setup_database
 from app.features.upload_bottle.routers import router as upload_bottle_router
+from app.features.upload_bottle.services import load_ocr_reader
 
 logger = logging.getLogger(__name__)
 
@@ -17,12 +18,17 @@ settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    """Initialize the database engine and session factory before the app serves requests."""
+    """Initialize the database engine, session factory, and OCR model before the app serves requests."""
     logger.info(
         f"Starting {settings.app_info.APP_NAME} "
         f"(environment={settings.app_info.ENV}, debug={settings.app_info.DEBUG})"
     )
     setup_database()
+
+    logger.info("Loading OCR model into memory...")
+    load_ocr_reader()
+    logger.info("OCR model loaded and ready.")
+
     yield
     logger.info(f"Shutting down {settings.app_info.APP_NAME}")
 

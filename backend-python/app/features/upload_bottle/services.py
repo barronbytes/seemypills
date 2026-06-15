@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=1)
-def _load_ocr_reader() -> "Reader":
+def load_ocr_reader() -> "Reader":
     """Load the EasyOCR model once per process and cache it for reuse across requests."""
     import easyocr
     return easyocr.Reader(['en'], gpu=False)
@@ -81,7 +81,7 @@ class BottleService:
 
         try:
             # Text Extraction Pipeline: AI Engine ➜ (bounding box, text, confidence) blocks ➜ raw text block
-            reader = _load_ocr_reader()
+            reader = load_ocr_reader()
             ocr_results = reader.readtext(image, detail=1)
             extracted_raw_text = " ".join(text for _, text, _ in ocr_results).strip()
 

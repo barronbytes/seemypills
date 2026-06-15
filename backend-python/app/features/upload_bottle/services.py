@@ -1,4 +1,5 @@
 import logging
+from functools import lru_cache
 from typing import TYPE_CHECKING
 
 from sqlalchemy.orm import Session
@@ -8,11 +9,20 @@ from fastapi import UploadFile, HTTPException, status
 from app.features.upload_bottle.schemas import BottleResponse
 from app.features.upload_bottle.models import Bottle
 
-# Type-checking-only import: avoids loading numpy at runtime, matching this file's lazy-import pattern for heavy ML libraries
+# Type-checking-only import: avoids loading numpy/easyocr at runtime, matching this file's lazy-import pattern for heavy ML libraries
 if TYPE_CHECKING:
+    from easyocr import Reader
     from numpy import ndarray
 
 logger = logging.getLogger(__name__)
+
+
+@lru_cache(maxsize=1)
+def load_ocr_reader() -> "Reader":
+    """Load the EasyOCR model once per process and cache it for reuse across requests."""
+    import easyocr
+    return easyocr.Reader(['en'], gpu=False)
+
 
 class BottleService:
     """Manages business logic, OCR extraction tracking, and persistence for uploaded medication bottles."""
@@ -70,11 +80,8 @@ class BottleService:
         """Run the OCR engine against a decoded image matrix and extract its brand name and raw text."""
 
         try:
-            # Lazy import heavy ML libraries to reduce app load latency
-            import easyocr
-
             # Text Extraction Pipeline: AI Engine ➜ (bounding box, text, confidence) blocks ➜ raw text block
-            reader = easyocr.Reader(['en'], gpu=False)
+            reader = load_ocr_reader()
             ocr_results = reader.readtext(image, detail=1)
             extracted_raw_text = " ".join(text for _, text, _ in ocr_results).strip()
 

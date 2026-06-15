@@ -3,9 +3,6 @@ set -e
 
 echo "🚀 Starting automated deployment for SeeMyPills..."
 
-# Ensure in root repository directory
-cd ~/seemypills
-
 # ========================================
 # 1. Deploy frontend
 # ========================================
@@ -14,6 +11,9 @@ cd ~/seemypills/frontend
 pnpm install
 pnpm build
 aws s3 sync dist/ s3://seemypills-frontend --delete
+
+echo "🌐 Invalidating CloudFront cache..."
+aws cloudfront create-invalidation --distribution-id E21GVE2MB4NAJK --paths "/*" > /dev/null
 
 # ========================================
 # 2. Deploy backend

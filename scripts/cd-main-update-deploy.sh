@@ -3,9 +3,6 @@ set -e
 
 echo "🚀 Starting automated deployment for SeeMyPills..."
 
-# Ensure in root repository directory
-cd ~/seemypills
-
 # ========================================
 # 1. Deploy frontend
 # ========================================

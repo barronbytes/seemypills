@@ -14,5 +14,5 @@ class Bottle(Base, PrimaryKeyMixin, TimestampMixin, SoftDeleteMixin):
     __tablename__ = "pill_bottle"
 
 
-    brand_name: Mapped[str] = mapped_column(String, nullable=False)
-    ocr_raw_text: Mapped[str | None] = mapped_column(Text, default=None)
+    brand_name: Mapped[str] = mapped_column(String)
+    ocr_raw_text: Mapped[str] = mapped_column(Text)

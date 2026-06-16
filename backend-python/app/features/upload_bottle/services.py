@@ -33,10 +33,14 @@ class BottleService:
 
     @staticmethod
     def _bounding_box_area(bounding_box: list[list[float]]) -> float:
-        """Estimate the printed area of an OCR text block from its four corner points."""
-        x_coordinates = [point[0] for point in bounding_box]
-        y_coordinates = [point[1] for point in bounding_box]
-        return (max(x_coordinates) - min(x_coordinates)) * (max(y_coordinates) - min(y_coordinates))
+        """Estimate the printed area of an OCR text block using the shoelace formula for rotated bounding boxes."""
+        n = len(bounding_box)
+        area = 0.0
+        for i in range(n):
+            j = (i + 1) % n
+            area += bounding_box[i][0] * bounding_box[j][1]
+            area -= bounding_box[j][0] * bounding_box[i][1]
+        return abs(area) / 2.0
 
     def _decode_bottle_image(self, file: UploadFile) -> "ndarray":
         """Validate an uploaded image's format and decode it into a processable image matrix."""
@@ -44,7 +48,6 @@ class BottleService:
         # CHECK #1: Exit if wrong file type
         if not file.content_type.startswith("image/"):
             logger.error(f"Validation failed. Rejected invalid file format: {file.content_type}")
-            file.close()
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Uploaded file must be a valid image format (PNG/JPEG)."
@@ -75,6 +78,11 @@ class BottleService:
                 status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
                 detail="Unable to successfully process the provided image file. Try uploading a clearer, well-lit photo."
             )
+        
+        finally:
+            # Close file to prevent unreleased file descriptors and temporary files from 
+            # leaking on the host kernel (development) or AWS EC2 instance (production)
+            file.close()
 
     def _run_ocr_pipeline(self, image: "ndarray") -> tuple[str, str]:
         """Run the OCR engine against a decoded image matrix and extract its brand name and raw text."""

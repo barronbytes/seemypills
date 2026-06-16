@@ -54,7 +54,7 @@ seemypills/backend-python/
 
 ## Usage
 
-**Local Development**
+### 💻 Local Development
 
 ```bash
 uv run uvicorn app.main:app --reload    # start FastAPI dev server
@@ -66,7 +66,7 @@ uv run pytest tests/folder/             # run tests on speciic folder
 uv run pytest tests/folder/file.py      # run tests on specific file
 ```
 
-### Database Workflow
+### 🗄️ Database Workflow
 
 Terminal PostgreSQL:
 

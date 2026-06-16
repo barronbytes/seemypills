@@ -6,10 +6,11 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import UploadFile, HTTPException, status
 
-from app.features.upload_bottle.schemas import BottleResponse
 from app.features.upload_bottle.models import Bottle
+from app.features.upload_bottle.schemas import BottleResponse
 
-# Type-checking-only import: avoids loading numpy/easyocr at runtime, matching this file's lazy-import pattern for heavy ML libraries
+# Evaluates TRUE for IDE type-checking, but FALSE at runtime.
+# Prevents heavy ML libraries from loading at the top level, preserving lazy-loading performance for use in called functions.
 if TYPE_CHECKING:
     from easyocr import Reader
     from numpy import ndarray

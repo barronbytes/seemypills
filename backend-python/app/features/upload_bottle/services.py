@@ -46,9 +46,19 @@ class BottleService:
     def _decode_bottle_image(self, file: UploadFile) -> "ndarray":
         """Validate an uploaded image's format and decode it into a processable image matrix."""
 
-        # CHECK #1: Exit if wrong file type
-        if not file.content_type.startswith("image/"):
-            logger.error(f"Validation failed. Rejected invalid file format: {file.content_type}")
+        # CHECK #1: Fail-fast if file payload size exceeds 7 MB.
+        # Protects server RAM from un-spooled binary streams before reading bytes.
+        MAX_FILE_SIZE = 7 * 1024 * 1024  # 7,340,032 bytes
+        if file.size and file.size >= MAX_FILE_SIZE:
+            logger.error(f"Validation failed. Payload size exceeded maximum limit: {file.size} bytes")
+            raise HTTPException(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                detail="Uploaded file is too large. Please upload an image smaller than 7MB."
+            )
+
+        # CHECK #2: Exit for invalid client header (not Content-Type= image/*)
+        if not file.content_type or not file.content_type.startswith("image/"):
+            logger.error(f"Validation failed. Rejected invalid header format: {file.content_type}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Uploaded file must be a valid image format (PNG/JPEG)."
@@ -58,21 +68,37 @@ class BottleService:
             # Lazy import heavy ML libraries to reduce app load latency
             import cv2
             import numpy as np
+            import filetype
 
-            # Image Decoding Pipeline: binary stream (upload) ➜ bytes ➜ 1-D array ➜ 3-D array
+            # Read binary stream for uploaded image
             image_bytes = file.file.read()
+
+            # CHECK #3: Exit for invalid image byte types (not JPG, JPEG, or PNG)
+            bytes_type = filetype.guess(image_bytes)
+            if bytes_type is None or bytes_type.extension not in ["jpg", "jpeg", "png"]:
+                logger.error(f"Validation failed. Magic bytes evaluated to unsupported type: {getattr(bytes_type, 'extension', None)}")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Invalid image structure. Only standard JPEG and PNG files are accepted."
+                )
+
+            # Image Decoding Pipeline: binary stream (upload) ➜ bytes ➜ 1-D NP array ➜ 3-D NP array (CV2 BGR)
             image_array = np.frombuffer(buffer=image_bytes, dtype=np.uint8)
             image = cv2.imdecode(buf=image_array, flags=cv2.IMREAD_COLOR)
 
-            # CHECK #2: Image not processed as 3-D np array
+            # CHECK #4: Image not processed as 3-D array
             if image is None:
                 raise ValueError("OpenCV failed to decode binary matrix stream.")
 
             # TODO: Add OpenCV adjustments (grayscale, thresholding)
 
             return image
+        
+        # Catch and re-raise explicit boundary validation failures
+        except HTTPException as http_err:
+            raise http_err
 
-        # CHECK #3: Catch image decoding runtime exceptions
+        # Catch image decoding runtime exceptions
         except Exception as decode_err:
             logger.exception(f"Fatal processing failure inside internal image decoding sequence: {str(decode_err)}")
             raise HTTPException(

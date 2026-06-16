@@ -8,8 +8,8 @@ from app.db.mixins import PrimaryKeyMixin, TimestampMixin, SoftDeleteMixin
 class Bottle(Base, PrimaryKeyMixin, TimestampMixin, SoftDeleteMixin):
     """
     Defines table for storing extracted medication bottle information.
-    Requires a valid relation to a originating tracking device.
-    Brand_name is the only required data point right now.
+    Requires a valid relation to an originating tracking device.
+    Both brand_name and ocr_raw_text are strictly required data points.
     """
     __tablename__ = "pill_bottle"
 

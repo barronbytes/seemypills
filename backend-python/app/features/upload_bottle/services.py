@@ -135,11 +135,11 @@ class BottleService:
 
             return parsed_brand_name, extracted_raw_text
 
-        # CHECK #2: Catch and re-raise expected HTTP validations originating from this scope's own boundary checks
+        # Catch and re-raise expected HTTP validations originating from this scope's own boundary checks
         except HTTPException as http_err:
             raise http_err
 
-        # CHECK #3: Catch OCR engine runtime exceptions
+        # Catch OCR engine runtime exceptions
         except Exception as ocr_err:
             logger.exception(f"Fatal processing failure inside internal ML OCR engine sequence: {str(ocr_err)}")
             raise HTTPException(

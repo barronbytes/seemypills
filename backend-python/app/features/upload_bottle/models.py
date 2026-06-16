@@ -2,10 +2,10 @@ from sqlalchemy import String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
-from app.db.mixins import PrimaryKeyMixin, TimestampMixin
+from app.db.mixins import PrimaryKeyMixin, TimestampMixin, SoftDeleteMixin
 
 
-class Bottle(Base, PrimaryKeyMixin, TimestampMixin):
+class Bottle(Base, PrimaryKeyMixin, TimestampMixin, SoftDeleteMixin):
     """
     Defines table for storing extracted medication bottle information.
     Requires a valid relation to a originating tracking device.

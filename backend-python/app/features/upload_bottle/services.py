@@ -41,6 +41,7 @@ class BottleService:
         """        
         Prioritizes tall, bold text (like medication brand names) while penalizing 
         short, wide horizontal text sequences (such as manufacturer labels).
+        Uses a strict 60% Height / 40% Area power-weight scoring system.
 
         bounded_box:
             bounded_box is a list of 4 coordinate pairs tracking vertices 
@@ -53,8 +54,13 @@ class BottleService:
         # Calculate rectangle footprint
         total_area = box_width * box_height
 
-        return box_height * total_area
+        # Handle extreme edge-case where OCR returns zero-width/height fragments
+        if box_height == 0 or total_area == 0:
+            return 0.0
 
+        # Apply exponential weights to guarantee a true 60/40 relative influence split
+        return (box_height ** 0.60) * (total_area ** 0.40)
+    
     def _decode_bottle_image(self, file: UploadFile) -> "ndarray":
         """Validate an uploaded image's format and decode it into a processable image matrix."""
 
@@ -145,7 +151,7 @@ class BottleService:
             extracted_raw_text = " ".join(text for _, text, _ in ocr_results).strip()
 
             # Brand Name Heuristic: Extract coordinates package and process via isolated geometry function
-            largest_block = max(ocr_results, key=lambda result: self._bounded_box_heuristic(result[0]))
+            largest_block = max(ocr_results, key=lambda result: BottleService._bounded_box_heuristic(result[0]))
             parsed_brand_name = largest_block[1].strip().title()
             return parsed_brand_name, extracted_raw_text
 

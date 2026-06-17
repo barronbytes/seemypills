@@ -37,29 +37,23 @@ class BottleService:
         self.db = db
     
     @staticmethod
-    def _bounded_box_heuristic(bounding_box: list[list[float]]) -> float:
+    def _bounded_box_heuristic(bounded_box: list[list[float]]) -> float:
         """        
         Prioritizes tall, bold text (like medication brand names) while penalizing 
         short, wide horizontal text sequences (such as manufacturer labels).
 
-        bounding_box:
-            bounding_box is a list of 4 coordinate pairs tracking vertices 
+        bounded_box:
+            bounded_box is a list of 4 coordinate pairs tracking vertices 
             clockwise: [Top-Left [x,y], Top-Right [x,y], Bottom-Right [x,y], Bottom-Left [x,y]]
         """
-        # Calculate true perpendicular font height (invariant against image rotation)
-        font_height = math.dist(bounding_box[0], bounding_box[3])
+        # Calculate true perpendicular height and width (resistant to image rotation)
+        box_height = math.dist(bounded_box[0], bounded_box[3])
+        box_width = math.dist(bounded_box[0], bounded_box[1])
 
-        # Calculate geographic polygon footprint using the Shoelace formula
-        n = len(bounding_box)
-        area = 0.0
-        for i in range(n):
-            j = (i + 1) % n
-            area += bounding_box[i][0] * bounding_box[j][1]
-            area -= bounding_box[j][0] * bounding_box[i][1]
-        total_area = abs(area) / 2.0
+        # Calculate rectangle footprint
+        total_area = box_width * box_height
 
-        # Combine height and area for text heuristic size
-        return font_height * total_area
+        return box_height * total_area
 
     def _decode_bottle_image(self, file: UploadFile) -> "ndarray":
         """Validate an uploaded image's format and decode it into a processable image matrix."""

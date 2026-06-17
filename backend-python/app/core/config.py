@@ -50,11 +50,6 @@ class AWSSettings(BaseModel):
 
 class Settings(BaseSettings):
     """Pydantic generates fields directly from environmental variables"""
-    app_info: AppSettings
-    cors_info: CorsSettings
-    db_info: DatabaseSettings
-    aws_info: AWSSettings = AWSSettings()
-
     model_config = SettingsConfigDict(
         env_file=f".env.{env_type}",
         env_file_encoding="utf-8",
@@ -63,6 +58,11 @@ class Settings(BaseSettings):
         validate_assignment=True,
         case_sensitive=False
     )
+
+    app_info: AppSettings
+    cors_info: CorsSettings
+    db_info: DatabaseSettings
+    aws_info: AWSSettings = AWSSettings() # Default values overriden by env.production (not env.development)
 
 
 def get_settings() -> Settings:

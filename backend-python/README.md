@@ -71,7 +71,7 @@ uv run pytest tests/folder/file.py      # run tests on specific file
 Terminal PostgreSQL:
 
 ```bash
-sudo psql -U <db_user> -d <db_name>     # enter the database console
+sudo -u postgres psql -d <db_name>      # enter the database console
 \l                                      # list all databases (run inside psql)
 \dt                                     # list tables in the current database (run inside psql)
 ```

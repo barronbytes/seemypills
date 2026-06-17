@@ -1,4 +1,5 @@
 import logging
+import math
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
@@ -34,17 +35,31 @@ class BottleService:
     def __init__(self, db: Session) -> None:
         """Initialize the service and inject the persistence layer database session."""
         self.db = db
-
+    
     @staticmethod
-    def _bounding_box_area(bounding_box: list[list[float]]) -> float:
-        """Estimate the printed area of an OCR text block using the shoelace formula for rotated bounding boxes."""
+    def _bounded_box_heuristic(bounding_box: list[list[float]]) -> float:
+        """        
+        Prioritizes tall, bold text (like medication brand names) while penalizing 
+        short, wide horizontal text sequences (such as manufacturer labels).
+
+        bounding_box:
+            bounding_box is a list of 4 coordinate pairs tracking vertices 
+            clockwise: [Top-Left [x,y], Top-Right [x,y], Bottom-Right [x,y], Bottom-Left [x,y]]
+        """
+        # Calculate true perpendicular font height (invariant against image rotation)
+        font_height = math.dist(bounding_box[0], bounding_box[3])
+
+        # Calculate geographic polygon footprint using the Shoelace formula
         n = len(bounding_box)
         area = 0.0
         for i in range(n):
             j = (i + 1) % n
             area += bounding_box[i][0] * bounding_box[j][1]
             area -= bounding_box[j][0] * bounding_box[i][1]
-        return abs(area) / 2.0
+        total_area = abs(area) / 2.0
+
+        # Combine height and area for text heuristic size
+        return font_height * total_area
 
     def _decode_bottle_image(self, file: UploadFile) -> "ndarray":
         """Validate an uploaded image's format and decode it into a processable image matrix."""
@@ -123,8 +138,7 @@ class BottleService:
         try:
             # Text Extraction Pipeline: AI Engine ➜ (bounding box, text, confidence) blocks ➜ raw text block
             reader = load_ocr_reader()
-            ocr_results = reader.readtext(image, detail=1)
-            extracted_raw_text = " ".join(text for _, text, _ in ocr_results).strip()
+            ocr_results = reader.readtext(image, detail=1) # List values of ([coordinates], "text", confidence float)
 
             # CHECK #1: Exit early if the OCR engine detected no readable text at all
             if not ocr_results:
@@ -134,11 +148,11 @@ class BottleService:
                     detail="No readable text was found on the label. Try uploading a clearer, well-lit photo."
                 )
 
-            # Brand Name Heuristic: medication labels ususally print the brand name as the largest text on the bottle,
-            # so the OCR block with the largest bounding-box area is taken as the brand name candidate.
-            largest_block = max(ocr_results, key=lambda result: self._bounding_box_area(result[0]))
-            parsed_brand_name = largest_block[1].strip()
+            extracted_raw_text = " ".join(text for _, text, _ in ocr_results).strip()
 
+            # Brand Name Heuristic: Extract coordinates package and process via isolated geometry function
+            largest_block = max(ocr_results, key=lambda result: self._bounded_box_heuristic(result[0]))
+            parsed_brand_name = largest_block[1].strip().title()
             return parsed_brand_name, extracted_raw_text
 
         # Catch and re-raise expected HTTP validations originating from this scope's own boundary checks

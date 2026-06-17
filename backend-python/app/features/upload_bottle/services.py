@@ -2,6 +2,9 @@ import logging
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
+import cv2 # Fully loaded and cached in sys.modules during the app lifespan boot phase
+import numpy as np
+import filetype
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import UploadFile, HTTPException, status
@@ -55,6 +58,7 @@ class BottleService:
                 status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
                 detail="Uploaded file is too large. Please upload an image smaller than 7MB."
             )
+        
 
         # CHECK #2: Exit for invalid client header (not Content-Type= image/*)
         if not file.content_type or not file.content_type.startswith("image/"):
@@ -65,22 +69,24 @@ class BottleService:
             )
 
         try:
-            # Lazy import heavy ML libraries to reduce app load latency
-            import cv2
-            import numpy as np
-            import filetype
-
-            # Read binary stream for uploaded image
-            image_bytes = file.file.read()
+            # OPTIMIZATION: Read only first 2KB to verify magic signatures.
+            # This moves the pointer. Thus need to seek(0) later.
+            header_bytes = file.file.read(2048)
+            bytes_type = filetype.guess(header_bytes)
 
             # CHECK #3: Exit for invalid image byte types (not JPG, JPEG, or PNG)
-            bytes_type = filetype.guess(image_bytes)
-            if bytes_type is None or bytes_type.extension not in ["jpg", "jpeg", "png"]:
-                logger.error(f"Validation failed. Magic bytes evaluated to unsupported type: {getattr(bytes_type, 'extension', None)}")
+            if not bytes_type or bytes_type.extension not in ["jpg", "jpeg", "png"]:
+                detected_ext = bytes_type.extension if bytes_type else "unknown"
+                logger.error(f"Validation failed. Magic bytes evaluated to unsupported type: {detected_ext}")
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Invalid image structure. Only standard JPEG and PNG files are accepted."
                 )
+
+            # Read binary stream for uploaded image
+            file.file.seek(0)
+            image_bytes = file.file.read()
+
 
             # Image Decoding Pipeline: binary stream (upload) ➜ bytes ➜ 1-D NP array ➜ 3-D NP array (CV2 BGR)
             image_array = np.frombuffer(buffer=image_bytes, dtype=np.uint8)

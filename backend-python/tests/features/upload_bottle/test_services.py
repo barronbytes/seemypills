@@ -21,6 +21,7 @@ class _FakeUploadFile:
 
     def __init__(self, content_type: str, raw_bytes: bytes) -> None:
         self.content_type = content_type
+        self.size = len(raw_bytes)
         self.file = io.BytesIO(raw_bytes)
 
     def close(self) -> None:

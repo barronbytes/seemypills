@@ -17,6 +17,8 @@ dependencies = [
     "python-dotenv>=1.2.2",
     "python-multipart>=0.0.32",
     "sqlalchemy>=2.0.49",
+    "torch>=2.12.1",
+    "torchvision>=0.27.1",
     "uvicorn>=0.46.0",
 ]
 
@@ -36,3 +38,12 @@ filterwarnings = [
     "ignore:torch\\.ao\\.quantization is deprecated:DeprecationWarning",
     "ignore:'pin_memory' argument is set as true but no accelerator is found:UserWarning",
 ]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+torchvision = { index = "pytorch-cpu" }

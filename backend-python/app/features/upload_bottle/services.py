@@ -47,9 +47,11 @@ class BottleService:
             bounded_box is a list of 4 coordinate pairs tracking vertices 
             clockwise: [Top-Left [x,y], Top-Right [x,y], Bottom-Right [x,y], Bottom-Left [x,y]]
         """
+        point_top_left, point_top_right, _, point_bottom_left = bounded_box
+
         # Calculate true perpendicular height and width (resistant to image rotation)
-        box_height = math.dist(bounded_box[0], bounded_box[3])
-        box_width = math.dist(bounded_box[0], bounded_box[1])
+        box_height = math.dist(point_top_left, point_bottom_left)
+        box_width = math.dist(point_top_left, point_top_right)
 
         # Calculate rectangle footprint
         total_area = box_width * box_height
@@ -101,7 +103,6 @@ class BottleService:
             # Read binary stream for uploaded image
             file.file.seek(0)
             image_bytes = file.file.read()
-
 
             # Image Decoding Pipeline: binary stream (upload) ➜ bytes ➜ 1-D NP array ➜ 3-D NP array (CV2 BGR)
             image_array = np.frombuffer(buffer=image_bytes, dtype=np.uint8)

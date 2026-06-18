@@ -25,9 +25,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     )
     setup_database()
 
-    logger.info("Loading OCR model into memory...")
+    logger.info("Pre-loading ML heavy libraries.")
     load_ocr_reader()
-    logger.info("OCR model loaded and ready.")
+    import cv2  # noqa: F401
+    logger.info("ML heavy libraries loaded and ready.")
 
     yield
     logger.info(f"Shutting down {settings.app_info.APP_NAME}")

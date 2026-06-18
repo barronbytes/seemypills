@@ -20,7 +20,7 @@ router = APIRouter(tags=["Medication Bottles"])
     "/",
     response_model=StandardResponse[BottleResponse],
     status_code=status.HTTP_201_CREATED,
-    summary="Upload medication bottle image",
+    summary="Upload medication bottle image.",
     description="Processes an image of a medication bottle using OCR and saves the parsed brand name to the database."
 )
 async def create_bottle_record(

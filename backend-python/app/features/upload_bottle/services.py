@@ -72,7 +72,7 @@ class BottleService:
         if file.size and file.size >= MAX_FILE_SIZE:
             logger.error(f"Validation failed. Payload size exceeded maximum limit: {file.size} bytes")
             raise HTTPException(
-                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                status_code=status.HTTP_413_CONTENT_TOO_LARGE,
                 detail="Uploaded file is too large. Please upload an image smaller than 7MB."
             )
         

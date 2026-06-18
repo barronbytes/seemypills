@@ -129,9 +129,10 @@ class BottleService:
             )
         
         finally:
-            # Close file to prevent unreleased file descriptors and temporary files from 
-            # leaking on the host kernel (development) or AWS EC2 instance (production)
-            file.close()
+            # Close the underlying SpooledTemporaryFile directly (sync).
+            # Prevents unreleased file descriptors and temporary files from leaking
+            # on the host kernel (development) or AWS EC2 instance (production)
+            file.file.close()
 
     def _run_ocr_pipeline(self, image: "ndarray") -> tuple[str, str]:
         """Run the OCR engine against a decoded image matrix and extract its brand name and raw text."""

@@ -35,6 +35,51 @@ def _build_upload_file(filename: str, content_type: str) -> _FakeUploadFile:
 
 
 # ======================================================================
+# _bounded_box_heuristic
+# ======================================================================
+
+
+def test_bounded_box_heuristic_prioritizes_tall_box_over_wide_box_of_equal_area():
+    """
+    Check that _bounded_box_heuristic scores a tall, narrow box higher than a
+    short, wide box of the same total area, matching the documented 60%
+    height weighting that prioritizes brand name text over manufacturer labels.
+    """
+    tall_narrow_box = [[0, 0], [2, 0], [2, 12], [0, 12]]
+    short_wide_box = [[0, 0], [12, 0], [12, 2], [0, 2]]
+
+    tall_score = BottleService._bounded_box_heuristic(tall_narrow_box)
+    wide_score = BottleService._bounded_box_heuristic(short_wide_box)
+
+    assert tall_score > wide_score
+
+
+def test_bounded_box_heuristic_with_zero_height_returns_zero():
+    """
+    Check that _bounded_box_heuristic returns 0.0 for a degenerate OCR
+    fragment with no perpendicular height between its top and bottom edges.
+    """
+    zero_height_box = [[0, 0], [10, 0], [10, 0], [0, 0]]
+
+    score = BottleService._bounded_box_heuristic(zero_height_box)
+
+    assert score == 0.0
+
+
+def test_bounded_box_heuristic_with_zero_width_returns_zero():
+    """
+    Check that _bounded_box_heuristic returns 0.0 for a degenerate OCR
+    fragment with no width between its left and right edges, even though
+    its height is nonzero.
+    """
+    zero_width_box = [[0, 0], [0, 0], [0, 5], [0, 5]]
+
+    score = BottleService._bounded_box_heuristic(zero_width_box)
+
+    assert score == 0.0
+
+
+# ======================================================================
 # _decode_bottle_image
 # ======================================================================
 
@@ -51,10 +96,25 @@ def test_decode_bottle_image_with_real_photo_succeeds():
     assert isinstance(decoded_image, np.ndarray)
 
 
-def test_decode_bottle_image_with_wrong_file_format_fails():
+def test_decode_bottle_image_with_oversized_payload_fails():
     """
     Check that _decode_bottle_image raises HTTPException when the uploaded
-    file is not an image format.
+    file's payload size meets or exceeds the 7MB limit.
+    """
+    service = BottleService(db=MagicMock(spec=Session))
+    oversized_bytes = b"\x00" * (7 * 1024 * 1024)
+    upload_file = _FakeUploadFile(content_type="image/jpeg", raw_bytes=oversized_bytes)
+
+    with pytest.raises(HTTPException) as exc_info:
+        service._decode_bottle_image(upload_file)
+
+    assert exc_info.value.status_code == status.HTTP_413_CONTENT_TOO_LARGE
+
+
+def test_decode_bottle_image_with_invalid_content_type_header_fails():
+    """
+    Check that _decode_bottle_image raises HTTPException when the uploaded
+    file's Content-Type header is not an image format.
     """
     service = BottleService(db=MagicMock(spec=Session))
     upload_file = _build_upload_file("hello_world.txt", content_type="text/plain")
@@ -63,6 +123,22 @@ def test_decode_bottle_image_with_wrong_file_format_fails():
         service._decode_bottle_image(upload_file)
 
     assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_decode_bottle_image_with_mismatched_magic_bytes_fails():
+    """
+    Check that _decode_bottle_image raises HTTPException when the uploaded
+    file's Content-Type header claims an image format but its magic bytes
+    do not match a supported JPEG or PNG signature.
+    """
+    service = BottleService(db=MagicMock(spec=Session))
+    upload_file = _build_upload_file("hello_world.txt", content_type="image/png")
+
+    with pytest.raises(HTTPException) as exc_info:
+        service._decode_bottle_image(upload_file)
+
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+    assert "Invalid image structure" in exc_info.value.detail
 
 
 # ======================================================================

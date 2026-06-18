@@ -5,6 +5,14 @@ from sqlalchemy import UUID as DB_UUID, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 
+def _utc_now():
+    """Helper function to return a SQL expression for the current UTC timestamp."""
+    return func.timezone(
+        "UTC",      # timezone
+        func.now()  # timestamp expression
+    )
+
+
 class PrimaryKeyMixin:
     """Add id column to models."""
 
@@ -19,12 +27,13 @@ class TimestampMixin:
     """Add columns for created_at and updated_at to models."""
 
     created_at: Mapped[datetime] = mapped_column(
-        server_default=func.timezone('UTC', func.now())
+        server_default=_utc_now()
     )
     updated_at: Mapped[datetime] = mapped_column(
-        server_default=func.timezone('UTC', func.now()),
-        server_onupdate=func.timezone('UTC', func.now())
+        server_default=_utc_now(),
+        server_onupdate=_utc_now()
     )
+
 
 class SoftDeleteMixin:
     """Add soft delete support to models."""

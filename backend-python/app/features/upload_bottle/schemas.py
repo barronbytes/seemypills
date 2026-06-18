@@ -8,7 +8,7 @@ class BottleBase(BaseModel):
 
 
 class BottleCreate(BottleBase):
-    ocr_raw_text: str | None = None         # source of truth
+    ocr_raw_text: str
 
 
 class BottleResponse(BottleBase):

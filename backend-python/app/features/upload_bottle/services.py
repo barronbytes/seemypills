@@ -1,15 +1,20 @@
 import logging
+import math
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
+import cv2 # Fully loaded and cached in sys.modules during the app lifespan boot phase
+import numpy as np
+import filetype
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import UploadFile, HTTPException, status
 
-from app.features.upload_bottle.schemas import BottleResponse
 from app.features.upload_bottle.models import Bottle
+from app.features.upload_bottle.schemas import BottleResponse
 
-# Type-checking-only import: avoids loading numpy/easyocr at runtime, matching this file's lazy-import pattern for heavy ML libraries
+# Evaluates TRUE for IDE type-checking, but FALSE at runtime.
+# Prevents heavy ML libraries from loading at the top level, preserving lazy-loading performance for use in called functions.
 if TYPE_CHECKING:
     from easyocr import Reader
     from numpy import ndarray
@@ -30,51 +35,104 @@ class BottleService:
     def __init__(self, db: Session) -> None:
         """Initialize the service and inject the persistence layer database session."""
         self.db = db
-
+    
     @staticmethod
-    def _bounding_box_area(bounding_box: list[list[float]]) -> float:
-        """Estimate the printed area of an OCR text block from its four corner points."""
-        x_coordinates = [point[0] for point in bounding_box]
-        y_coordinates = [point[1] for point in bounding_box]
-        return (max(x_coordinates) - min(x_coordinates)) * (max(y_coordinates) - min(y_coordinates))
+    def _bounded_box_heuristic(bounded_box: list[list[float]]) -> float:
+        """        
+        Prioritizes tall, bold text (like medication brand names) while penalizing 
+        short, wide horizontal text sequences (such as manufacturer labels).
+        Uses a strict 60% Height / 40% Area power-weight scoring system.
 
+        bounded_box:
+            bounded_box is a list of 4 coordinate pairs tracking vertices 
+            clockwise: [Top-Left [x,y], Top-Right [x,y], Bottom-Right [x,y], Bottom-Left [x,y]]
+        """
+        point_top_left, point_top_right, _, point_bottom_left = bounded_box
+
+        # Calculate true perpendicular height and width (resistant to image rotation)
+        box_height = math.dist(point_top_left, point_bottom_left)
+        box_width = math.dist(point_top_left, point_top_right)
+
+        # Calculate rectangle footprint
+        total_area = box_width * box_height
+
+        # Handle extreme edge-case where OCR returns zero-width/height fragments
+        if box_height == 0 or total_area == 0:
+            return 0.0
+
+        # Apply exponential weights to guarantee a true 60/40 relative influence split
+        return (box_height ** 0.60) * (total_area ** 0.40)
+    
     def _decode_bottle_image(self, file: UploadFile) -> "ndarray":
         """Validate an uploaded image's format and decode it into a processable image matrix."""
 
-        # CHECK #1: Exit if wrong file type
-        if not file.content_type.startswith("image/"):
-            logger.error(f"Validation failed. Rejected invalid file format: {file.content_type}")
-            file.close()
+        # CHECK #1: Fail-fast if file payload size exceeds 7 MB.
+        # Protects server RAM from un-spooled binary streams before reading bytes.
+        MAX_FILE_SIZE = 7 * 1024 * 1024  # 7,340,032 bytes
+        if file.size and file.size >= MAX_FILE_SIZE:
+            logger.error(f"Validation failed. Payload size exceeded maximum limit: {file.size} bytes")
+            raise HTTPException(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                detail="Uploaded file is too large. Please upload an image smaller than 7MB."
+            )
+        
+
+        # CHECK #2: Exit for invalid client header (not Content-Type= image/*)
+        if not file.content_type or not file.content_type.startswith("image/"):
+            logger.error(f"Validation failed. Rejected invalid header format: {file.content_type}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Uploaded file must be a valid image format (PNG/JPEG)."
             )
 
         try:
-            # Lazy import heavy ML libraries to reduce app load latency
-            import cv2
-            import numpy as np
+            # OPTIMIZATION: Read only first 2KB to verify magic signatures.
+            # This moves the pointer. Thus need to seek(0) later.
+            header_bytes = file.file.read(2048)
+            bytes_type = filetype.guess(header_bytes)
 
-            # Image Decoding Pipeline: binary stream (upload) ➜ bytes ➜ 1-D array ➜ 3-D array
+            # CHECK #3: Exit for invalid image byte types (not JPG, JPEG, or PNG)
+            if not bytes_type or bytes_type.extension not in ["jpg", "jpeg", "png"]:
+                detected_ext = bytes_type.extension if bytes_type else "unknown"
+                logger.error(f"Validation failed. Magic bytes evaluated to unsupported type: {detected_ext}")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Invalid image structure. Only standard JPEG and PNG files are accepted."
+                )
+
+            # Read binary stream for uploaded image
+            file.file.seek(0)
             image_bytes = file.file.read()
+
+            # Image Decoding Pipeline: binary stream (upload) ➜ bytes ➜ 1-D NP array ➜ 3-D NP array (CV2 BGR)
             image_array = np.frombuffer(buffer=image_bytes, dtype=np.uint8)
             image = cv2.imdecode(buf=image_array, flags=cv2.IMREAD_COLOR)
 
-            # CHECK #2: Image not processed as 3-D np array
+            # CHECK #4: Image not processed as 3-D array
             if image is None:
                 raise ValueError("OpenCV failed to decode binary matrix stream.")
 
             # TODO: Add OpenCV adjustments (grayscale, thresholding)
 
             return image
+        
+        # Catch and re-raise explicit boundary validation failures
+        except HTTPException as http_err:
+            raise http_err
 
-        # CHECK #3: Catch image decoding runtime exceptions
+        # Catch image decoding runtime exceptions
         except Exception as decode_err:
             logger.exception(f"Fatal processing failure inside internal image decoding sequence: {str(decode_err)}")
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
                 detail="Unable to successfully process the provided image file. Try uploading a clearer, well-lit photo."
             )
+        
+        finally:
+            # Close the underlying SpooledTemporaryFile directly (sync).
+            # Prevents unreleased file descriptors and temporary files from leaking
+            # on the host kernel (development) or AWS EC2 instance (production)
+            file.file.close()
 
     def _run_ocr_pipeline(self, image: "ndarray") -> tuple[str, str]:
         """Run the OCR engine against a decoded image matrix and extract its brand name and raw text."""
@@ -82,8 +140,7 @@ class BottleService:
         try:
             # Text Extraction Pipeline: AI Engine ➜ (bounding box, text, confidence) blocks ➜ raw text block
             reader = load_ocr_reader()
-            ocr_results = reader.readtext(image, detail=1)
-            extracted_raw_text = " ".join(text for _, text, _ in ocr_results).strip()
+            ocr_results = reader.readtext(image, detail=1) # List values of ([coordinates], "text", confidence float)
 
             # CHECK #1: Exit early if the OCR engine detected no readable text at all
             if not ocr_results:
@@ -93,18 +150,18 @@ class BottleService:
                     detail="No readable text was found on the label. Try uploading a clearer, well-lit photo."
                 )
 
-            # Brand Name Heuristic: medication labels ususally print the brand name as the largest text on the bottle,
-            # so the OCR block with the largest bounding-box area is taken as the brand name candidate.
-            largest_block = max(ocr_results, key=lambda result: self._bounding_box_area(result[0]))
-            parsed_brand_name = largest_block[1].strip()
+            extracted_raw_text = " ".join(text for _, text, _ in ocr_results).strip()
 
+            # Brand Name Heuristic: Extract coordinates package and process via isolated geometry function
+            largest_block = max(ocr_results, key=lambda result: BottleService._bounded_box_heuristic(result[0]))
+            parsed_brand_name = largest_block[1].strip().title()
             return parsed_brand_name, extracted_raw_text
 
-        # CHECK #2: Catch and re-raise expected HTTP validations originating from this scope's own boundary checks
+        # Catch and re-raise expected HTTP validations originating from this scope's own boundary checks
         except HTTPException as http_err:
             raise http_err
 
-        # CHECK #3: Catch OCR engine runtime exceptions
+        # Catch OCR engine runtime exceptions
         except Exception as ocr_err:
             logger.exception(f"Fatal processing failure inside internal ML OCR engine sequence: {str(ocr_err)}")
             raise HTTPException(

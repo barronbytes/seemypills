@@ -4,9 +4,9 @@ This backend is a Python FastAPI service deployed on AWS, built using a vertical
 
 ## Tech Stack
 
-**Backend:** FastAPI (Python)
-**Runtime:** Uvicorn (ASGI server)
-**Tooling:** uv, pytest
+- **Backend:** FastAPI (Python)
+- **Runtime:** Uvicorn (ASGI server)
+- **Tooling:** uv, pytest
 
 ## Project Structure
 

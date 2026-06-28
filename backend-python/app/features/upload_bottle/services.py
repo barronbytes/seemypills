@@ -75,7 +75,6 @@ class BottleService:
                 status_code=status.HTTP_413_CONTENT_TOO_LARGE,
                 detail="Uploaded file is too large. Please upload an image smaller than 7MB."
             )
-        
 
         # CHECK #2: Exit for invalid client header (not Content-Type= image/*)
         if not file.content_type or not file.content_type.startswith("image/"):
